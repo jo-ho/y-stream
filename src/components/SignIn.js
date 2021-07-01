@@ -2,6 +2,8 @@ import React from 'react';
 import GoogleLogin from 'react-google-login';
 
 const YOUTUBE_API = "https://www.googleapis.com/youtube/v3/subscriptions"
+var channels = []
+var channelIds = []
 
 class SignIn extends React.Component {
 
@@ -9,13 +11,38 @@ class SignIn extends React.Component {
 		super(props);
 		this.fetchNextPage = this.fetchNextPage.bind(this);
 		this.onSignInSuccess = this.onSignInSuccess.bind(this)
+        this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
 	  }
+
+    retrieveLiveStatus(channelIds) {
+        var obj = {ids : channelIds}
+        // console.log(obj)
+
+        var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
+        fetch(url, {   
+            headers: {
+            'Content-Type': 'application/json',
+         } })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
 
 	fetchNextPage(params) {
 		fetch(`${YOUTUBE_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
-			console.log('Success:', data);
+			// console.log('Success:', data);
+            
+            data.items.forEach(element => {
+                var snip = element.snippet
+                channelIds.push(snip.resourceId.channelId)
+                channels.push(snip)
+            });
 			var nextToken = data.nextPageToken
 
 			if (nextToken !== undefined) {
@@ -23,7 +50,10 @@ class SignIn extends React.Component {
 				this.fetchNextPage(params)
 
 			} else {
-				console.log('done');
+
+                console.log(channels)
+
+                this.retrieveLiveStatus(channelIds)
 			}
 		})
 		.catch((error) => {
@@ -32,8 +62,10 @@ class SignIn extends React.Component {
 	}
 
 
+
+
     onSignInSuccess(googleUser) {
-        console.log(googleUser)
+        // console.log(googleUser)
         // var profile = googleUser.getBasicProfile();
         // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
         // console.log('Name: ' + profile.getName());
@@ -47,14 +79,7 @@ class SignIn extends React.Component {
             maxResults: 50
         })        
         
-        // fetch(`${YOUTUBE_API}?` + params)
-        // .then(response => response.json())
-        // .then(data => {
-        //   console.log('Success:', data);
-        // })
-        // .catch((error) => {
-        //   console.error('Error:', error);
-        // });
+
 		this.fetchNextPage(params)
 
     }
