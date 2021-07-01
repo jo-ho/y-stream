@@ -1,41 +1,19 @@
 {
-  "name": "y-stream",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "cors": "^2.8.5",
-    "http-proxy-middleware": "^2.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-google-login": "^5.2.2",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.2"
-  },
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "client": "cd client && npm start",
+    "server": "node app.js",
+    "start": " node app.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^6.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
   }
 }
