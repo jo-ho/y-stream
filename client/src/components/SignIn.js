@@ -1,9 +1,11 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
 
-const YOUTUBE_API = "https://www.googleapis.com/youtube/v3/subscriptions"
+const YOUTUBE_SUBS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
+const YOUTUBE_VIDEOS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
 var channels = []
 var channelIds = []
+var liveChannels = []
 
 class SignIn extends React.Component {
 
@@ -33,7 +35,7 @@ class SignIn extends React.Component {
     }
 
 	fetchNextPage(params) {
-		fetch(`${YOUTUBE_API}?` + params)
+		fetch(`${YOUTUBE_SUBS_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
 			// console.log('Success:', data);
@@ -51,9 +53,10 @@ class SignIn extends React.Component {
 
 			} else {
 
-                console.log(channels)
+                // console.log(channels)
 
                 this.retrieveLiveStatus(channelIds)
+                // this.retrieveLiveStatus([channelIds[0]])
 			}
 		})
 		.catch((error) => {
