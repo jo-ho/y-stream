@@ -27,44 +27,76 @@ app.use(bodyParser.json());
 
 var ids = []
 var i = 0
+var j = 0
 var liveChannels = []
+var liveDone = false
+var channelDone = false
+
+var arr1 = []
+var arr2 = []
 
 function retrieveLiveStatus(channelId, serverResp) {
 	var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
-
 	https.request(liveUrl, options, (res) => {
 		var liveContentLength = res.headers['content-length']
-		// console.log(res.headers)
-		var chUrl = 'https://www.youtube.com/channel/' + channelId
-		https.request(chUrl, options, (res2) => {
-			var channelContentLength = res2.headers['content-length']
+		arr1.push(liveContentLength)
 
-			// console.log("liveCL: " + liveContentLength)
-			// console.log("channel: " + channelContentLength)
-			// console.log(channelId)
-			// console.log(liveContentLength / channelContentLength)
-			if (liveContentLength / channelContentLength < threshold) {
-				console.log("live")
-				liveChannels.push(channelId)
-			} else {
-				console.log("not live")
+
+		if (i < ids.length - 1) {
+			i += 1
+			retrieveLiveStatus(ids[i], serverResp)
+		} else {
+			console.log("done live")
+			liveDone = true
+			if (channelDone) {
+				computeLiveStatus(arr1, arr2, serverResp)
 			}
-			if (i < ids.length - 1) {
-				i += 1
-				retrieveLiveStatus(ids[i], serverResp)
-			} else {
-				console.log("done")
-				var obj = {channels : liveChannels}
-				serverResp.header("Access-Control-Allow-Origin", "*");
-				serverResp.header("Access-Control-Allow-Headers", "X-Requested-With");
-				serverResp.json(obj)
-			}
-		}).on('error', (err) => {
-			console.error(err);
-		}).end();
+			
+
+		}
+
 	}).on('error', (err) => {
-	console.error(err);
+		console.error(err);
 	}).end();
+}
+
+function retrieveChannelStatus(channelId, serverResp) {
+	var chUrl = 'https://www.youtube.com/channel/' + channelId
+	https.request(chUrl, options, (res2) => {
+		var channelContentLength = res2.headers['content-length']
+		arr2.push(channelContentLength)
+		if (j < ids.length - 1) {
+			j += 1
+			retrieveChannelStatus(ids[j], serverResp)
+		} else {
+			console.log("done channels")
+			channelDone = true
+			if (liveDone) {
+				computeLiveStatus(arr1, arr2, serverResp)
+			}
+			
+		}
+	}).on('error', (err) => {
+		console.error(err);
+	}).end();
+}
+
+function computeLiveStatus(liveContentLengths, channelContentLengths, serverResp) {
+
+
+	for (var i = 0; i < ids.length; i++) {
+		if (liveContentLengths[i] / channelContentLengths[i] < threshold) {
+			console.log("live")
+			liveChannels.push(ids[i])
+			
+		}
+		
+	}
+
+	var obj = {channels : liveChannels}
+	serverResp.header("Access-Control-Allow-Origin", "*");
+	serverResp.header("Access-Control-Allow-Headers", "X-Requested-With");
+	serverResp.json(obj)
 }
 
 app.get('/api/:obj', (req, res) => {
@@ -77,6 +109,7 @@ app.get('/api/:obj', (req, res) => {
   // var channelId = "UCiqtXLBjDT6TRLhetkqO4nA"
 //   console.log(ids)
   retrieveLiveStatus(ids[0], res)
+  retrieveChannelStatus(ids[0], res)
 });
 
 
