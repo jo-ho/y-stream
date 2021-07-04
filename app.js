@@ -38,8 +38,7 @@ var arr2 = []
 function retrieveLiveStatus(channelId, serverResp) {
 	var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
 	https.request(liveUrl, options, (res) => {
-		var liveContentLength = res.headers['content-length']
-		arr1.push(liveContentLength)
+		arr1.push(res.headers['content-length'])
 
 
 		if (i < ids.length - 1) {
@@ -63,8 +62,7 @@ function retrieveLiveStatus(channelId, serverResp) {
 function retrieveChannelStatus(channelId, serverResp) {
 	var chUrl = 'https://www.youtube.com/channel/' + channelId
 	https.request(chUrl, options, (res2) => {
-		var channelContentLength = res2.headers['content-length']
-		arr2.push(channelContentLength)
+		arr2.push(res2.headers['content-length'])
 		if (j < ids.length - 1) {
 			j += 1
 			retrieveChannelStatus(ids[j], serverResp)
@@ -101,9 +99,12 @@ function computeLiveStatus(liveContentLengths, channelContentLengths, serverResp
 
 app.get('/api/:obj', (req, res) => {
   console.log('/api called!')
-   ids = []
-	i = 0
-	liveChannels = []
+ 	ids = []
+  	i = 0
+ 	j = 0
+ 	liveChannels = []
+	liveDone = false
+  	channelDone = false
 
   ids = JSON.parse(req.params.obj)["ids"]
   // var channelId = "UCiqtXLBjDT6TRLhetkqO4nA"

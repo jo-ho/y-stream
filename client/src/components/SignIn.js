@@ -27,7 +27,10 @@ class SignIn extends React.Component {
          } })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(this.props.onGetLiveStatusesDone)
+            
+            this.props.onGetLiveStatusesDone(data.channels)
+            // console.log(data)
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -38,7 +41,6 @@ class SignIn extends React.Component {
 		fetch(`${YOUTUBE_SUBS_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
-			// console.log('Success:', data);
             
             data.items.forEach(element => {
                 var snip = element.snippet
@@ -53,7 +55,6 @@ class SignIn extends React.Component {
 
 			} else {
 
-                // console.log(channels)
 
                 this.retrieveLiveStatus(channelIds)
                 // this.retrieveLiveStatus([channelIds[0]])
