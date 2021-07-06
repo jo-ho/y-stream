@@ -1,6 +1,4 @@
-.App {
-  text-align: center;
-}
+
 
 .App-logo {
   height: 40vmin;
@@ -13,16 +11,23 @@
   }
 }
 
-.App-header {
+.App {
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding-left: 20px;
+  /* display: flex;
+  flex-direction: column; */
+  /* align-items: center;
+  justify-content: center; */
+  font-size: calc(5px + 2vmin);
   color: white;
 }
+
+.subscriptions-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+}
+
 
 .App-link {
   color: #61dafb;

@@ -2,10 +2,8 @@ import React from 'react';
 import GoogleLogin from 'react-google-login';
 
 const YOUTUBE_SUBS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
-const YOUTUBE_VIDEOS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
 var channels = []
 var channelIds = []
-var liveChannels = []
 
 class SignIn extends React.Component {
 
@@ -56,7 +54,10 @@ class SignIn extends React.Component {
 			} else {
 
 
-                this.retrieveLiveStatus(channelIds)
+                // this.props.onGetLiveStatusesDone(channelIds)
+                console.log(channels)
+                this.props.onGetSubscriptionsDone(channels)
+                // this.retrieveLiveStatus(channelIds.slice(0, 21))
                 // this.retrieveLiveStatus([channelIds[0]])
 			}
 		})
@@ -69,12 +70,7 @@ class SignIn extends React.Component {
 
 
     onSignInSuccess(googleUser) {
-        // console.log(googleUser)
-        // var profile = googleUser.getBasicProfile();
-        // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        // console.log('Name: ' + profile.getName());
-        // console.log('Image URL: ' + profile.getImageUrl());
-        // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present
+        channels = []
         var params =  new URLSearchParams({            
             key : `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
             part: 'snippet',

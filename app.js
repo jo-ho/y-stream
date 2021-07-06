@@ -15,7 +15,7 @@ const keepaliveAgent = new HttpsAgent({
 const threshold = 0.9
 const options = {
 	method: 'HEAD',
-	agent: keepaliveAgent
+	agent: keepaliveAgent,
 }
 
 app.use(cors())
@@ -102,6 +102,44 @@ function computeLiveStatus(res) {
 	res.json(obj)
 }
 
+function retrieveStatus(channelId, serverResp) {
+	var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
+
+	https.request(liveUrl, options, (res) => {
+		var liveContentLength = res.headers['content-length']
+		// console.log(res.headers)
+		var chUrl = 'https://www.youtube.com/channel/' + channelId
+		https.request(chUrl, options, (res2) => {
+			var channelContentLength = res2.headers['content-length']
+
+			// console.log("liveCL: " + liveContentLength)
+			// console.log("channel: " + channelContentLength)
+			// console.log(channelId)
+			// console.log(liveContentLength / channelContentLength)
+			if (liveContentLength / channelContentLength < threshold) {
+				console.log("live")
+				liveChannels.push(channelId)
+			} else {
+				console.log("not live")
+			}
+			if (i < ids.length - 1) {
+				i += 1
+				retrieveStatus(ids[i], serverResp)
+			} else {
+				console.log("done")
+				var obj = {channels : liveChannels}
+				serverResp.header("Access-Control-Allow-Origin", "*");
+				serverResp.header("Access-Control-Allow-Headers", "X-Requested-With");
+				serverResp.json(obj)
+			}
+		}).on('error', (err) => {
+			console.error(err);
+		}).end();
+	}).on('error', (err) => {
+	console.error(err);
+	}).end();
+}
+
 app.get('/api/:obj', (req, res) => {
 	console.log('/api called!')
 	liveContentLengths = []
@@ -115,16 +153,18 @@ app.get('/api/:obj', (req, res) => {
 	ids = JSON.parse(req.params.obj)["ids"]
 	// var channelId = "UCiqtXLBjDT6TRLhetkqO4nA"
 	//   console.log(ids)
+
 	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(values  => {
 		console.log("promises done")
 		// console.log(liveContentLengths)
 		// console.log(channelContentLengths)
 		// console.log(values)
 		computeLiveStatus(res)
-		});
 	});
 
 
+	// retrieveStatus(ids[0], res)
+})
 
 
 app.get('/', (req,res) => {
