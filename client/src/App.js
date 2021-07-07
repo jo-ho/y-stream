@@ -9,10 +9,12 @@ class App  extends React.Component {
     super(props);
     this.createEmbeds = this.createEmbeds.bind(this);
     this.addSubscriptionsInfo = this.addSubscriptionsInfo.bind(this)
+    this.addFollow = this.addFollow.bind(this)
 
     this.state = {
       liveChannelIds: [],
-      subscriptionsInfo:[]
+      subscriptionsInfo:[],
+      follows: []
     };
   }
 
@@ -22,7 +24,7 @@ class App  extends React.Component {
     console.log("In app")
     console.log(channelIds)
     this.setState({
-      chIds: this.state.chIds.concat(channelIds)
+      liveChannelIds: this.state.liveChannelIds.concat(channelIds)
     });
   }
 
@@ -31,6 +33,28 @@ class App  extends React.Component {
       subscriptionsInfo: this.state.subscriptionsInfo.concat(info)
     });
   }
+
+  addFollow = (channelId) => {
+    if (this.state.follows.includes(channelId)) {
+      this.setState({
+        follows: this.state.follows.filter(id => channelId !== id)
+      }, () => {
+        console.log(this.state.follows)
+
+
+      });
+
+    } else {
+      this.setState({
+        follows: [...this.state.follows, channelId]
+      }, () => {
+        console.log(this.state.follows)
+        
+      });
+    }
+
+  }
+
   
   render() {
     return (
@@ -46,7 +70,7 @@ class App  extends React.Component {
         </div>
           <div style={{marginRight:'auto'}}>
             <h3> Subscriptions </h3>
-            <SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo}/>
+            <SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} addFollow={this.addFollow}/>
           </div>
       </div>
 
