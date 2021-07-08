@@ -9,22 +9,23 @@ class App  extends React.Component {
     super(props);
     this.createEmbeds = this.createEmbeds.bind(this);
     this.addSubscriptionsInfo = this.addSubscriptionsInfo.bind(this)
-    this.addFollow = this.addFollow.bind(this)
+    this.toggleFollow = this.toggleFollow.bind(this);
+    this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
+    this.toggleShowSubscriptionsInfo = this.toggleShowSubscriptionsInfo.bind(this)
 
     this.state = {
       liveChannelIds: [],
       subscriptionsInfo:[],
-      follows: []
+      follows: [],
+      showSubscriptions: false
     };
   }
 
 
   
   createEmbeds = (channelIds) => {
-    console.log("In app")
-    console.log(channelIds)
     this.setState({
-      liveChannelIds: this.state.liveChannelIds.concat(channelIds)
+      liveChannelIds: channelIds
     });
   }
 
@@ -34,44 +35,76 @@ class App  extends React.Component {
     });
   }
 
-  addFollow = (channelId) => {
+  toggleFollow = (channelId) => {
     if (this.state.follows.includes(channelId)) {
       this.setState({
         follows: this.state.follows.filter(id => channelId !== id)
-      }, () => {
-        console.log(this.state.follows)
-
-
       });
 
     } else {
       this.setState({
         follows: [...this.state.follows, channelId]
-      }, () => {
-        console.log(this.state.follows)
-        
       });
     }
 
   }
 
+  retrieveLiveStatus(channelIds) {
+    var obj = {ids : channelIds}
+    // console.log(obj)
+
+    var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
+    fetch(url, {   
+        headers: {
+        'Content-Type': 'application/json',
+     } })
+    .then(response => response.json())
+    .then(data => {
+        // console.log(this.props.onGetLiveStatusesDone)
+        
+        this.createEmbeds(data.channels)
+        // console.log(data)
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+  toggleShowSubscriptionsInfo() {
+    this.setState({
+      showSubscriptions: !this.state.showSubscriptions
+    }, () => {
+		if (!this.state.showSubscriptions) {
+			this.retrieveLiveStatus(this.state.follows)
+		}
+	})
+	
+
+
+  }
   
   render() {
     return (
 
 
-      <div className="App">
-        <SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfo}/>
+	<div className="App">
+		<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfo}/>
+ 
+               
+        { this.state.showSubscriptions ?           
+			<div style={{marginRight:'auto'}}>
+				<h3> Subscriptions </h3>
+				<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show live</button> 
+				<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
+			</div> :
 
-        <div style={{marginRight:'auto'}}>
-            <h3 > Live And Upcoming </h3>
-            <Embeds chIds={this.state.liveChannelIds}/>
+			<div style={{marginRight:'auto'}}>
+				<h3 > Live And Upcoming </h3>
+				<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show subscriptions</button>    
+				<Embeds chIds={this.state.liveChannelIds}/>
+			</div>
+        }
 
-        </div>
-          <div style={{marginRight:'auto'}}>
-            <h3> Subscriptions </h3>
-            <SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} addFollow={this.addFollow}/>
-          </div>
       </div>
 
     );

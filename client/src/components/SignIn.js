@@ -11,29 +11,7 @@ class SignIn extends React.Component {
 		super(props);
 		this.fetchNextPage = this.fetchNextPage.bind(this);
 		this.onSignInSuccess = this.onSignInSuccess.bind(this)
-        this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
 	  }
-
-    retrieveLiveStatus(channelIds) {
-        var obj = {ids : channelIds}
-        // console.log(obj)
-
-        var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
-        fetch(url, {   
-            headers: {
-            'Content-Type': 'application/json',
-         } })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(this.props.onGetLiveStatusesDone)
-            
-            this.props.onGetLiveStatusesDone(data.channels)
-            // console.log(data)
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
 
 	fetchNextPage(params) {
 		fetch(`${YOUTUBE_SUBS_API}?` + params)
@@ -65,9 +43,6 @@ class SignIn extends React.Component {
 			console.error('Error:', error);
 		});
 	}
-
-
-
 
     onSignInSuccess(googleUser) {
         channels = []
