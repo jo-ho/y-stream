@@ -9,6 +9,15 @@
   border-radius: 10px;
 }
 
+.followed-button {
+	background-color: white;
+	color: #282c34;
+	font-size: calc(2vmin - 2px);
+	padding: 5px;
+	border-radius: 10px;
+
+}
+
 .App {
   background-color: #282c34;
   min-height: 100vh;

@@ -6,7 +6,7 @@ export default class SubscriptionsContainer extends Component {
         return (
             <div className="subscriptions-container">
                 {this.props.subscriptionsInfo.map((info) =>
-                 (<SubscriptionElement thumbnailURL={info.thumbnails.default.url} title={info.title} id={info.resourceId.channelId} toggleFollow={this.props.toggleFollow}/>))}
+                 (<SubscriptionElement info={info} toggleFollow={this.props.toggleFollow} isFollowed={info.isFollowed}/>))}
             </div>
         )
     }

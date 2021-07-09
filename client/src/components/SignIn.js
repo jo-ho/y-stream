@@ -20,6 +20,7 @@ class SignIn extends React.Component {
             
             data.items.forEach(element => {
                 var snip = element.snippet
+				snip.isFollowed = false
                 channelIds.push(snip.resourceId.channelId)
                 channels.push(snip)
             });

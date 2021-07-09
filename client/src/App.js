@@ -35,7 +35,9 @@ class App  extends React.Component {
     });
   }
 
-  toggleFollow = (channelId) => {
+  toggleFollow = (info) => {
+	  var channelId = info.resourceId.channelId
+	  info.isFollowed = !info.isFollowed
     if (this.state.follows.includes(channelId)) {
       this.setState({
         follows: this.state.follows.filter(id => channelId !== id)
