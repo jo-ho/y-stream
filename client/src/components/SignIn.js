@@ -17,11 +17,17 @@ class SignIn extends React.Component {
 		fetch(`${YOUTUBE_SUBS_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
-            
+            var storedFollows =  JSON.parse(localStorage.getItem('follows')) 
             data.items.forEach(element => {
                 var snip = element.snippet
-				snip.isFollowed = false
-                channelIds.push(snip.resourceId.channelId)
+				var channelId = snip.resourceId.channelId
+				if (storedFollows.includes(channelId)) {
+					snip.isFollowed = true
+				} else {
+					snip.isFollowed = false
+
+				}
+                channelIds.push()
                 channels.push(snip)
             });
 			var nextToken = data.nextPageToken

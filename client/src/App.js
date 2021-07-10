@@ -13,12 +13,19 @@ class App  extends React.Component {
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
     this.toggleShowSubscriptionsInfo = this.toggleShowSubscriptionsInfo.bind(this)
 
+	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
     this.state = {
       liveChannelIds: [],
       subscriptionsInfo:[],
-      follows: [],
+      follows: storedFollows,
       showSubscriptions: false
     };
+
+  }
+
+  componentDidMount() {
+	this.retrieveLiveStatus( this.state.follows)
+
   }
 
 
@@ -41,14 +48,19 @@ class App  extends React.Component {
     if (this.state.follows.includes(channelId)) {
       this.setState({
         follows: this.state.follows.filter(id => channelId !== id)
-      });
+      } , () => this.saveFollows());
 
     } else {
       this.setState({
         follows: [...this.state.follows, channelId]
-      });
+      }, () => this.saveFollows());
     }
 
+  }
+
+  saveFollows = () => {
+	  
+	  localStorage.setItem('follows', JSON.stringify(this.state.follows))
   }
 
   retrieveLiveStatus(channelIds) {
