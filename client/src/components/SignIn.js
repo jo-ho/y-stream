@@ -18,6 +18,9 @@ class SignIn extends React.Component {
 		.then(response => response.json())
 		.then(data => {
             var storedFollows =  JSON.parse(localStorage.getItem('follows')) 
+			if (storedFollows === null) {
+				storedFollows = []
+			} 
             data.items.forEach(element => {
                 var snip = element.snippet
 				var channelId = snip.resourceId.channelId

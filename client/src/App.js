@@ -2,22 +2,30 @@ import './App.css';
 import SignIn from "./components/SignIn";
 import Embeds from './components/Embeds';
 import SubscriptionsContainer from './components/SubscriptionsContainer';
+import SideBar from './components/SideBar';
 import React from 'react'
+import 'react-pro-sidebar/dist/css/styles.css';
+
 
 class App  extends React.Component {
   constructor(props) {
     super(props);
     this.createEmbeds = this.createEmbeds.bind(this);
-    this.addSubscriptionsInfo = this.addSubscriptionsInfo.bind(this)
+    this.addSubscriptionsInfos = this.addSubscriptionsInfos.bind(this)
     this.toggleFollow = this.toggleFollow.bind(this);
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
     this.toggleShowSubscriptionsInfo = this.toggleShowSubscriptionsInfo.bind(this)
 
 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
+	if (storedFollows === null) {
+		storedFollows = []
+	} 
     this.state = {
       liveChannelIds: [],
       subscriptionsInfo:[],
+	  subscriptionsMap: {},
       follows: storedFollows,
+	  followInfos: [],
       showSubscriptions: false
     };
 
@@ -34,17 +42,35 @@ class App  extends React.Component {
     this.setState({
       liveChannelIds: channelIds
     });
+	var infos = []
+	channelIds.forEach(id => infos.push(this.state.subscriptionsMap[id]));
+	this.setState({
+		followInfos: infos
+	})
   }
 
-  addSubscriptionsInfo = (info) => {
+  addSubscriptionsInfos = (infos) => {
     this.setState({
-      subscriptionsInfo: this.state.subscriptionsInfo.concat(info)
+      subscriptionsInfo: infos
     });
+	var map = {}
+	infos.forEach(info => {
+		map[info.resourceId.channelId] = info
+	});
+
+	this.setState({
+		subscriptionsMap: map
+	}, () => {
+		console.log(this.state.subscriptionsMap)
+	});
+	
   }
 
   toggleFollow = (info) => {
 	  var channelId = info.resourceId.channelId
 	  info.isFollowed = !info.isFollowed
+	  
+
     if (this.state.follows.includes(channelId)) {
       this.setState({
         follows: this.state.follows.filter(id => channelId !== id)
@@ -65,7 +91,6 @@ class App  extends React.Component {
 
   retrieveLiveStatus(channelIds) {
     var obj = {ids : channelIds}
-    // console.log(obj)
 
     var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
     fetch(url, {   
@@ -74,10 +99,7 @@ class App  extends React.Component {
      } })
     .then(response => response.json())
     .then(data => {
-        // console.log(this.props.onGetLiveStatusesDone)
-        
         this.createEmbeds(data.channels)
-        // console.log(data)
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -100,10 +122,10 @@ class App  extends React.Component {
   render() {
     return (
 
-
 	<div className="App">
-		<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfo}/>
- 
+		<SideBar infos={this.state.followInfos} />
+		<main className="main-content">
+		<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
                
         { this.state.showSubscriptions ?           
 			<div style={{marginRight:'auto'}}>
@@ -118,7 +140,7 @@ class App  extends React.Component {
 				<Embeds chIds={this.state.liveChannelIds}/>
 			</div>
         }
-
+	  </main>
       </div>
 
     );
