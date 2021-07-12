@@ -1,4 +1,19 @@
 
+.nav-bar {
+	background-color: #1d1d1d;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	list-style-type:none;
+	margin: 0 -50px; 
+	margin-bottom: 20px;
+
+	
+
+}
+.nav-bar li{
+	margin: 10px;
+}
 
 
 .follow-button {
@@ -18,6 +33,7 @@
 
 }
 .main-content {
+	width: 100%;
 	padding-left: 20px;
 	padding-right: 20px;
 }

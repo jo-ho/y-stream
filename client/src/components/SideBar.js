@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import ReactTooltip from 'react-tooltip';
 
 

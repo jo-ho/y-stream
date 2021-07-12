@@ -5,7 +5,9 @@ import Embed from './components/Embed';
 import SubscriptionsContainer from './components/SubscriptionsContainer';
 import SideBar from './components/SideBar';
 import React from 'react'
+import Header from './components/Header';
 import 'react-pro-sidebar/dist/css/styles.css';
+
 
 
 class App  extends React.Component {
@@ -47,7 +49,19 @@ class App  extends React.Component {
       liveChannelIds: channelIds
     });
 	var infos = []
-	channelIds.forEach(id => infos.push(this.state.subscriptionsMap[id]));
+	channelIds.forEach(id => {
+		var info = this.state.subscriptionsMap[id]
+		if (info !== undefined) {
+			infos.push(info)
+
+		} else { // Followed channel unsubscribed
+			this.setState({
+				follows: this.state.follows.filter(followId => followId !== id)
+			  } , () => this.saveFollows());
+		}
+	});
+	console.log(infos)
+
 	this.setState({
 		followInfos: infos
 	})
@@ -134,28 +148,30 @@ class App  extends React.Component {
 
 	<div className="App">
 		<SideBar infos={this.state.followInfos} toggleShowEmbed={this.toggleShowEmbed}/>
-		<main className="main-content">
-		<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
+			<main className="main-content">
+			<Header/>
 
-		{!this.state.watchingStream ?
-		         this.state.showSubscriptions ?           
-					<div style={{marginRight:'auto'}}>
-						<h3> Subscriptions </h3>
-						<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show live</button> 
-						<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
-					</div> :
-		
-					<div style={{marginRight:'auto'}}>
-						<h3 > Live And Upcoming </h3>
-						<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show subscriptions</button>    
-						<Embeds chIds={this.state.liveChannelIds}/>
-					</div>
-				: 
-		<Embed id={this.state.watchingStreamId}/>}
-               
+			<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 
-	  </main>
-      </div>
+			{!this.state.watchingStream ?
+					this.state.showSubscriptions ?
+						<div style={{marginRight:'auto'}}>
+							<h3> Subscriptions </h3>
+							<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show live</button> 
+							<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
+						</div> :
+			
+						<div style={{marginRight:'auto'}}>
+							<h3 > Live And Upcoming </h3>
+							<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show subscriptions</button>    
+							{/* <Embeds chIds={this.state.liveChannelIds}/> */}
+						</div>
+					: 
+			<Embed id={this.state.watchingStreamId}/>}
+				
+
+			</main>
+		</div>
 
     );
   }
