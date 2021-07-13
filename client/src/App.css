@@ -7,14 +7,17 @@
 	list-style-type:none;
 	margin: 0 -50px; 
 	margin-bottom: 20px;
-
-	
-
 }
+
+
 .nav-bar li{
 	margin: 10px;
 }
 
+a {
+	text-decoration: none;
+	color: white	;
+}
 
 .follow-button {
   background-color: #282c34;

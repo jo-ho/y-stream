@@ -6,8 +6,16 @@ import SubscriptionsContainer from './components/SubscriptionsContainer';
 import SideBar from './components/SideBar';
 import React from 'react'
 import Header from './components/Header';
+
+
 import 'react-pro-sidebar/dist/css/styles.css';
 
+import {
+
+	Switch,
+	Route,
+	withRouter
+  } from "react-router-dom";
 
 
 class App  extends React.Component {
@@ -17,8 +25,7 @@ class App  extends React.Component {
     this.addSubscriptionsInfos = this.addSubscriptionsInfos.bind(this)
     this.toggleFollow = this.toggleFollow.bind(this);
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
-    this.toggleShowSubscriptionsInfo = this.toggleShowSubscriptionsInfo.bind(this)
-	this.toggleShowEmbed = this.toggleShowEmbed.bind(this)
+	this.selectStream = this.selectStream.bind(this)
 
 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
 	if (storedFollows === null) {
@@ -30,8 +37,6 @@ class App  extends React.Component {
 	  subscriptionsMap: {},
       follows: storedFollows,
 	  followInfos: [],
-      showSubscriptions: false,
-	  watchingStream: false,
 	  watchingStreamId: null
     };
 
@@ -124,22 +129,12 @@ class App  extends React.Component {
     });
 	}
 
-  toggleShowSubscriptionsInfo() {
-    this.setState({
-      showSubscriptions: !this.state.showSubscriptions
-    }, () => {
-		if (!this.state.showSubscriptions) {
-			this.retrieveLiveStatus(this.state.follows)
-		}
-	})
 
-	}
 
-	toggleShowEmbed(channelId) {
+	selectStream(channelId) {
 		this.setState({
-			watchingStream: true,
 			watchingStreamId: channelId
-		})
+		}, () => {this.props.history.push('/watch')})
 	}
 	
   
@@ -147,36 +142,36 @@ class App  extends React.Component {
     return (
 
 	<div className="App">
-		<SideBar infos={this.state.followInfos} toggleShowEmbed={this.toggleShowEmbed}/>
+		<SideBar infos={this.state.followInfos} selectStream={this.selectStream}/>
 			<main className="main-content">
-			<Header/>
+				<Header/>
 
-			<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
-
-			{!this.state.watchingStream ?
-					this.state.showSubscriptions ?
-						<div style={{marginRight:'auto'}}>
-							<h3> Subscriptions </h3>
-							<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show live</button> 
-							<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
-						</div> :
-			
+				<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
+				<Switch>
+					<Route exact path="/">
 						<div style={{marginRight:'auto'}}>
 							<h3 > Live And Upcoming </h3>
-							<button className="follow-button" onClick={this.toggleShowSubscriptionsInfo}>Show subscriptions</button>    
 							{/* <Embeds chIds={this.state.liveChannelIds}/> */}
 						</div>
-					: 
-			<Embed id={this.state.watchingStreamId}/>}
-				
-
+					</Route>
+					<Route path="/subscriptions">
+						<div style={{marginRight:'auto'}}>
+							<h3> Subscriptions </h3>
+							<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
+						</div> 
+					</Route>
+					<Route path="/watch">
+						{this.state.watchingStreamId !== null ? 
+						<Embed id={this.state.watchingStreamId}/> :
+						<p>Select a stream</p>} 
+					</Route>
+				</Switch>
 			</main>
 		</div>
-
     );
   }
 }
 
 
 
-export default App;
+export default withRouter(App) ;
