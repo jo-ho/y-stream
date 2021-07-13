@@ -144,9 +144,10 @@ class App  extends React.Component {
 	<div className="App">
 		<SideBar infos={this.state.followInfos} selectStream={this.selectStream}/>
 			<main className="main-content">
-				<Header/>
+				<Header onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 
-				<SignIn onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
+
+				
 				<Switch>
 					<Route exact path="/">
 						<div style={{marginRight:'auto'}}>

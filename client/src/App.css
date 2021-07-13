@@ -1,17 +1,27 @@
 
+body{
+	margin: 0px;
+   }
+
 .nav-bar {
 	background-color: #1d1d1d;
 	height: 40px;
 	display: flex;
 	align-items: center;
 	list-style-type:none;
-	margin: 0 -50px; 
+	margin: 0 -20px; 
 	margin-bottom: 20px;
+
 }
 
 
 .nav-bar li{
 	margin: 10px;
+}
+
+iframe {
+	height: 90vh;
+	width: 90vw;
 }
 
 a {
@@ -36,16 +46,18 @@ a {
 
 }
 .main-content {
-	width: 100%;
 	padding-left: 20px;
 	padding-right: 20px;
+	width: inherit;
+
 }
+
 
 .App {
   display: flex;
   background-color: #282c34;
   min-height: 100vh;
-
+  width: 100%;
   font-size: calc(5px + 2vmin);
   color: white;
 }

@@ -7,7 +7,7 @@ const FRAME_HEIGHT = "315"
 export default class Embed extends Component {
     render() {
         return (
-            <iframe width={FRAME_WIDTH} height={FRAME_HEIGHT} src={YOUTUBE_EMBED_URL + this.props.id } frameBorder="0" allowFullScreen/>
+            <iframe  src={YOUTUBE_EMBED_URL + this.props.id } frameBorder="0" allowFullScreen/>
         )
     }
 }
