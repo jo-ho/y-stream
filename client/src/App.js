@@ -26,6 +26,7 @@ class App  extends React.Component {
     this.toggleFollow = this.toggleFollow.bind(this);
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
 	this.selectStream = this.selectStream.bind(this)
+	this.setSignedIn = this.setSignedIn.bind(this)
 
 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
 	if (storedFollows === null) {
@@ -37,7 +38,8 @@ class App  extends React.Component {
 	  subscriptionsMap: {},
       follows: storedFollows,
 	  followInfos: [],
-	  watchingStreamId: null
+	  watchingStreamId: null,
+	  isSignedIn : false
     };
 
   }
@@ -136,6 +138,14 @@ class App  extends React.Component {
 			watchingStreamId: channelId
 		}, () => {this.props.history.push('/watch')})
 	}
+
+	setSignedIn(value) {
+		this.setState({
+			isSignedIn: value
+		}, () => {
+			console.log("set signed in")
+		})
+	}
 	
   
   render() {
@@ -144,27 +154,45 @@ class App  extends React.Component {
 	<div className="App">
 		<SideBar infos={this.state.followInfos} selectStream={this.selectStream}/>
 			<main className="main-content">
-				<Header onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
+				<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 
 
 				
 				<Switch>
 					<Route exact path="/">
-						<div style={{marginRight:'auto'}}>
-							<h3 > Live And Upcoming </h3>
-							{/* <Embeds chIds={this.state.liveChannelIds}/> */}
-						</div>
+						{this.state.isSignedIn ? 
+							<div style={{marginRight:'auto'}}>
+								<h3 > Live And Upcoming </h3>
+								{/* <Embeds chIds={this.state.liveChannelIds}/> */}
+							</div>
+							:
+							<p>Please login</p>
+						}
+
 					</Route>
 					<Route path="/subscriptions">
-						<div style={{marginRight:'auto'}}>
-							<h3> Subscriptions </h3>
-							<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
-						</div> 
+						{this.state.isSignedIn ? 
+							<div style={{marginRight:'auto'}}>
+							
+								<h3> Subscriptions </h3>
+								<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
+							</div> 
+							:
+							<p>Please login</p>
+						}
+						
+
 					</Route>
 					<Route path="/watch">
-						{this.state.watchingStreamId !== null ? 
-						<Embed id={this.state.watchingStreamId}/> :
-						<p>Select a stream</p>} 
+
+						{this.state.isSignedIn ? 
+							this.state.watchingStreamId !== null ?
+								<Embed id={this.state.watchingStreamId}/> :
+									<p>Select a stream</p> :
+							<p>Please login</p>
+						}
+							
+
 					</Route>
 				</Switch>
 			</main>

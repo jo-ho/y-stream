@@ -64,8 +64,9 @@ class SignIn extends React.Component {
             maxResults: 50
         })        
         
-
 		this.fetchNextPage(params)
+		this.props.setSignedIn()
+
 
     }
 
