@@ -163,7 +163,7 @@ class App  extends React.Component {
 						{this.state.isSignedIn ? 
 							<div style={{marginRight:'auto'}}>
 								<h3 > Live And Upcoming </h3>
-								{/* <Embeds chIds={this.state.liveChannelIds}/> */}
+								<Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds}/>
 							</div>
 							:
 							<p>Please login</p>
@@ -187,7 +187,7 @@ class App  extends React.Component {
 
 						{this.state.isSignedIn ? 
 							this.state.watchingStreamId !== null ?
-								<Embed id={this.state.watchingStreamId}/> :
+								<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId}/> :
 									<p>Select a stream</p> :
 							<p>Please login</p>
 						}

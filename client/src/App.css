@@ -19,10 +19,10 @@ body{
 	margin: 10px;
 }
 
-iframe {
+/* iframe {
 	height: 90vh;
 	width: 90vw;
-}
+} */
 
 a {
 	text-decoration: none;
@@ -75,7 +75,14 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.App-link {
-  color: #61dafb;
+.embeds-container {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	
 }
+
+.embed-element {
+	padding-bottom: 20px;
+}
+
 
