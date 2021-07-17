@@ -37,7 +37,7 @@ class App  extends React.Component {
       subscriptionsInfo:[],
 	  subscriptionsMap: {},
       follows: storedFollows,
-	  followInfos: [],
+	  liveChannelInfos: [],
 	  watchingStreamId: null,
 	  isSignedIn : false
     };
@@ -45,7 +45,11 @@ class App  extends React.Component {
   }
 
   componentDidMount() {
-	this.retrieveLiveStatus( this.state.follows)
+	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
+	if (storedFollows === null) {
+		storedFollows = []
+	} 
+	this.retrieveLiveStatus( storedFollows)
 
   }
 
@@ -55,22 +59,20 @@ class App  extends React.Component {
     this.setState({
       liveChannelIds: channelIds
     });
+
+	
 	var infos = []
 	channelIds.forEach(id => {
 		var info = this.state.subscriptionsMap[id]
 		if (info !== undefined) {
 			infos.push(info)
 
-		} else { // Followed channel unsubscribed
-			this.setState({
-				follows: this.state.follows.filter(followId => followId !== id)
-			  } , () => this.saveFollows());
 		}
 	});
 	console.log(infos)
 
 	this.setState({
-		followInfos: infos
+		liveChannelInfos: infos
 	})
   }
 
@@ -95,23 +97,29 @@ class App  extends React.Component {
 	  var channelId = info.resourceId.channelId
 	  info.isFollowed = !info.isFollowed
 	  
+	  var follows = JSON.parse(localStorage.getItem('follows'))
 
-    if (this.state.follows.includes(channelId)) {
-      this.setState({
-        follows: this.state.follows.filter(id => channelId !== id)
-      } , () => this.saveFollows());
+	  if (follows === null) {
+		  follows = []
+	  }
 
+    if (follows.includes(channelId)) {
+		follows = follows.filter(id => channelId == id)
     } else {
-      this.setState({
-        follows: [...this.state.follows, channelId]
-      }, () => this.saveFollows());
+		follows.push(channelId)
     }
+	console.log(follows)
+
+	this.saveFollows(follows)
 
   }
 
-  saveFollows = () => {
+  saveFollows = (follows) => {
 	  
-	  localStorage.setItem('follows', JSON.stringify(this.state.follows))
+	  localStorage.setItem('follows', JSON.stringify(follows))
+	  this.setState ({
+		  follows: follows
+	  })
   }
 
   retrieveLiveStatus(channelIds) {
@@ -152,7 +160,7 @@ class App  extends React.Component {
     return (
 
 	<div className="App">
-		<SideBar infos={this.state.followInfos} selectStream={this.selectStream}/>
+		<SideBar infos={this.state.liveChannelInfos} selectStream={this.selectStream}/>
 			<main className="main-content">
 				<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetLiveStatusesDone={this.createEmbeds} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 
