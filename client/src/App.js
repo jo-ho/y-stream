@@ -1,11 +1,12 @@
 import './App.css';
-import SignIn from "./components/SignIn";
 import Embeds from './components/Embeds';
 import Embed from './components/Embed';
 import SubscriptionsContainer from './components/SubscriptionsContainer';
 import SideBar from './components/SideBar';
 import React from 'react'
 import Header from './components/Header';
+import MaxFollowModal from './components/MaxFollowModal';
+import ReactModal from 'react-modal'
 
 
 import 'react-pro-sidebar/dist/css/styles.css';
@@ -30,6 +31,7 @@ class App  extends React.Component {
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
 	this.selectStream = this.selectStream.bind(this)
 	this.setSignedIn = this.setSignedIn.bind(this)
+	this.toggleShowModal = this.toggleShowModal.bind(this)
 
 
     this.state = {
@@ -39,7 +41,8 @@ class App  extends React.Component {
       follows: [],
 	  liveChannelInfos: [],
 	  watchingStreamId: null,
-	  isSignedIn : false
+	  isSignedIn : false,
+	  showModal : false
     };
 
   }
@@ -50,6 +53,7 @@ class App  extends React.Component {
 //   }
 
   componentDidMount() {
+	ReactModal.setAppElement('body')
 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
 	console.log(storedFollows)
 	if (storedFollows === null) {
@@ -124,6 +128,7 @@ class App  extends React.Component {
 
 		if (follows.length >= maxFollows) {
 			console.log("too many follows")
+			this.toggleShowModal(true)
 			return 
 		}
 		follows.push(channelId)
@@ -185,6 +190,12 @@ class App  extends React.Component {
 			console.log("set signed in")
 		})
 	}
+
+	toggleShowModal(value) {
+		this.setState({
+			showModal: value
+		})
+	}
 	
   
   render() {
@@ -215,7 +226,10 @@ class App  extends React.Component {
 							
 								<h3> Subscriptions </h3>
 								<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
+								<MaxFollowModal toggleShowModal={this.toggleShowModal} showModal={this.state.showModal} />
+
 							</div> 
+
 							:
 							<p>Please login</p>
 						}
