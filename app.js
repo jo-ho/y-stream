@@ -155,10 +155,8 @@ app.get('/api/:obj', (req, res) => {
 	//   console.log(ids)
 
 	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(values  => {
-		console.log("promises done")
-		// console.log(liveContentLengths)
-		// console.log(channelContentLengths)
-		// console.log(values)
+		console.log(liveContentLengths)
+		console.log(values)
 		computeLiveStatus(res)
 	});
 
