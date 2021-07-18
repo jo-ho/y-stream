@@ -66,7 +66,7 @@ class SignIn extends React.Component {
         })        
         
 		this.fetchNextPage(params)
-		this.props.setSignedIn()
+		this.props.setSignedIn(true, googleUser.getId())
 
 
     }

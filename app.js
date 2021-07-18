@@ -86,14 +86,10 @@ function computeLiveStatus(res) {
 
 
 	for (var i = 0; i < ids.length; i++) {
-		console.log(ids[i])
-		console.log(liveContentLengths[i] / channelContentLengths[i])
 		if (liveContentLengths[i] / channelContentLengths[i] < threshold || liveContentLengths[i] / channelContentLengths[i] > 1.1) {
-			console.log("live")
 			liveChannels.push(ids[i])
 			
 		}
-		
 	}
 
 	var obj = {channels : liveChannels}
@@ -151,12 +147,9 @@ app.get('/api/:obj', (req, res) => {
 
 
 	ids = JSON.parse(req.params.obj)["ids"]
-	// var channelId = "UCiqtXLBjDT6TRLhetkqO4nA"
-	//   console.log(ids)
 
 	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(values  => {
 		console.log(liveContentLengths)
-		console.log(values)
 		computeLiveStatus(res)
 	});
 

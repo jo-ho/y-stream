@@ -25,7 +25,7 @@ const maxFollows = 10
 class App  extends React.Component {
   constructor(props) {
     super(props);
-    this.createEmbeds = this.createEmbeds.bind(this);
+    this.updateLiveChannelInfos = this.updateLiveChannelInfos.bind(this);
     this.addSubscriptionsInfos = this.addSubscriptionsInfos.bind(this)
     this.toggleFollow = this.toggleFollow.bind(this);
     this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
@@ -47,18 +47,10 @@ class App  extends React.Component {
 
   }
 
-
-//   componentWillUnmount() {
-// 	clearInterval(this.interval);
-//   }
-
   componentDidMount() {
 	ReactModal.setAppElement('body')
 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
-	console.log(storedFollows)
-	if (storedFollows === null) {
-		storedFollows = []
-	} 
+
 	this.retrieveLiveStatus( storedFollows)
 
 	this.setState({
@@ -70,7 +62,7 @@ class App  extends React.Component {
 
 
   
-  createEmbeds = (channelIds) => {
+  updateLiveChannelInfos = (channelIds) => {
     this.setState({
       liveChannelIds: channelIds
     }, () => {
@@ -82,8 +74,6 @@ class App  extends React.Component {
 	
 			}
 		});
-		console.log(infos)
-	
 		this.setState({
 			liveChannelInfos: infos
 		})
@@ -96,17 +86,16 @@ class App  extends React.Component {
   addSubscriptionsInfos = (infos) => {
     this.setState({
       subscriptionsInfo: infos
-    });
-	var map = {}
-	infos.forEach(info => {
-		map[info.resourceId.channelId] = info
+    }, () => {
+		var map = {}
+		this.state.subscriptionsInfo.forEach(info => {
+			map[info.resourceId.channelId] = info
+		});
+		this.setState({
+			subscriptionsMap: map
+		});
 	});
 
-	this.setState({
-		subscriptionsMap: map
-	}, () => {
-		console.log(this.state.subscriptionsMap)
-	});
 	
   }
 
@@ -152,6 +141,11 @@ class App  extends React.Component {
   }
 
   retrieveLiveStatus(channelIds) {
+	if (channelIds === null) {
+		channelIds = []
+	} 
+
+	
     var obj = {ids : channelIds}
 
     var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
@@ -161,14 +155,13 @@ class App  extends React.Component {
      } })
     .then(response => response.json())
     .then(data => {
-        this.createEmbeds(data.channels)
-		// setTimeout(() => {
-		// 	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
-		// 	if (storedFollows === null) {
-		// 		storedFollows = []
-		// 	} 
-		// 	this.retrieveLiveStatus( storedFollows)
-		// }, refreshTimer)
+        this.updateLiveChannelInfos(data.channels)
+		setTimeout(() => {
+			var storedFollows =  JSON.parse(localStorage.getItem('follows'))
+
+			this.retrieveLiveStatus( storedFollows)
+			console.log("refresh")
+		}, refreshTimer)
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -183,11 +176,12 @@ class App  extends React.Component {
 		}, () => {this.props.history.push('/watch')})
 	}
 
-	setSignedIn(value) {
+	setSignedIn(value, userId) {
 		this.setState({
 			isSignedIn: value
 		}, () => {
 			console.log("set signed in")
+			console.log(userId)
 		})
 	}
 
@@ -202,7 +196,7 @@ class App  extends React.Component {
     return (
 
 	<div className="App">
-		<SideBar infos={this.state.liveChannelInfos} selectStream={this.selectStream}/>
+		<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream}/>
 			<main className="main-content">
 				<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 

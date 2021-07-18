@@ -13,7 +13,7 @@ export default class Logout extends Component {
 
 	  onLogoutSuccess () {
 		  console.log("logout success")
-		  this.props.setSignedIn()
+		  this.props.setSignedIn(false, null)
 	  }
 
 
