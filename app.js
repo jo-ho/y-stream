@@ -86,8 +86,12 @@ function computeLiveStatus(res) {
 
 
 	for (var i = 0; i < ids.length; i++) {
-		if (liveContentLengths[i] / channelContentLengths[i] < threshold || liveContentLengths[i] / channelContentLengths[i] > 1.1) {
+		console.log(ids[i])
+
+		console.log(liveContentLengths[i] / channelContentLengths[i])
+		if (liveContentLengths[i] / channelContentLengths[i] < threshold || liveContentLengths[i] / channelContentLengths[i] > 1.05) {
 			liveChannels.push(ids[i])
+
 			
 		}
 	}

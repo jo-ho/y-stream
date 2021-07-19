@@ -42,6 +42,7 @@ class App  extends React.Component {
 	  liveChannelInfos: [],
 	  watchingStreamId: null,
 	  isSignedIn : false,
+	  userId: null,
 	  showModal : false
     };
 
@@ -49,13 +50,10 @@ class App  extends React.Component {
 
   componentDidMount() {
 	ReactModal.setAppElement('body')
-	var storedFollows =  JSON.parse(localStorage.getItem('follows'))
-
-	this.retrieveLiveStatus( storedFollows)
-
-	this.setState({
-		follows:storedFollows
-	})
+	
+	if (JSON.parse(localStorage.getItem('follows')) === null) {
+		localStorage.setItem('follows', JSON.stringify({}))
+	}
 
 
   }
@@ -100,14 +98,15 @@ class App  extends React.Component {
   }
 
   toggleFollow = (info) => {
-	var follows = JSON.parse(localStorage.getItem('follows'))
+	var followsMap = JSON.parse(localStorage.getItem('follows'))
+	var follows = followsMap[this.state.userId]
 
 
 
 	  var channelId = info.resourceId.channelId
 	  
 
-	  if (follows === null) {
+	  if (follows === null || follows == undefined) {
 		  follows = []
 	  }
 
@@ -126,22 +125,24 @@ class App  extends React.Component {
 	info.isFollowed = !info.isFollowed
 
 
-	this.saveFollows(follows)
+	this.saveFollows(followsMap, follows)
 
   }
 
-  saveFollows = (follows) => {
+  saveFollows = (followsMap, follows) => {
 	  
 	  this.setState ({
 		  follows: follows
 	  }, () => {
-		localStorage.setItem('follows', JSON.stringify(follows))
+
+		followsMap[this.state.userId] = this.state.follows
+		localStorage.setItem('follows', JSON.stringify(followsMap))
 
 	  })
   }
 
   retrieveLiveStatus(channelIds) {
-	if (channelIds === null) {
+	if (channelIds === null || channelIds == undefined) {
 		channelIds = []
 	} 
 
@@ -157,7 +158,7 @@ class App  extends React.Component {
     .then(data => {
         this.updateLiveChannelInfos(data.channels)
 		setTimeout(() => {
-			var storedFollows =  JSON.parse(localStorage.getItem('follows'))
+			var storedFollows =  JSON.parse(localStorage.getItem('follows'))[this.state.userId]
 
 			this.retrieveLiveStatus( storedFollows)
 			console.log("refresh")
@@ -181,7 +182,20 @@ class App  extends React.Component {
 			isSignedIn: value
 		}, () => {
 			console.log("set signed in")
-			console.log(userId)
+			this.setState({
+				userId: userId
+			}, () => {
+				if (this.state.userId != null) {
+					var storedFollows =  JSON.parse(localStorage.getItem('follows'))[this.state.userId]
+
+					this.retrieveLiveStatus( storedFollows)
+				
+					this.setState({
+						follows:storedFollows
+					})
+				
+				}
+			})
 		})
 	}
 

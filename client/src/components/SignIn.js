@@ -12,13 +12,14 @@ class SignIn extends React.Component {
 		this.fetchNextPage = this.fetchNextPage.bind(this);
 		this.onSignInSuccess = this.onSignInSuccess.bind(this)
 	  }
+	
 
-	fetchNextPage(params) {
+	fetchNextPage(params, userId) {
 		fetch(`${YOUTUBE_SUBS_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
-            var storedFollows =  JSON.parse(localStorage.getItem('follows')) 
-			if (storedFollows === null) {
+            var storedFollows =  JSON.parse(localStorage.getItem('follows'))[userId] 
+			if (storedFollows === null || storedFollows === undefined) {
 				storedFollows = []
 			} 
             data.items.forEach(element => {
@@ -65,7 +66,7 @@ class SignIn extends React.Component {
             maxResults: 50
         })        
         
-		this.fetchNextPage(params)
+		this.fetchNextPage(params, googleUser.getId())
 		this.props.setSignedIn(true, googleUser.getId())
 
 
