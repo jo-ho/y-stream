@@ -79,7 +79,7 @@ class SignIn extends React.Component {
     render() {
         return (
             <GoogleLogin
-            clientId="64635892556-vn29tp5i3g7e6dct5td6a68bmcb563ji.apps.googleusercontent.com"
+            clientId={process.env.REACT_OAUTH_CLIENT_ID}
             onSuccess={this.onSignInSuccess}
             onFailure={this.onSignInFail}
             cookiePolicy={'single_host_origin'}

@@ -24,7 +24,7 @@ export default class Logout extends Component {
 	render() {
 		return (
 			<GoogleLogout
-			clientId="64635892556-vn29tp5i3g7e6dct5td6a68bmcb563ji.apps.googleusercontent.com"
+			clientId={process.env.REACT_OAUTH_CLIENT_ID}
 			buttonText="Logout"
 			onLogoutSuccess	={this.onLogoutSuccess}
 			onFailure={ this.onLogoutFail}

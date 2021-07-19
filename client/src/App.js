@@ -132,13 +132,7 @@ class App  extends React.Component {
 
 
   retrieveLiveStatus(channelIds) {
-	if (channelIds === null || channelIds == undefined) {
-		channelIds = []
-	} 
-
-	
     var obj = {ids : channelIds}
-
     var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
     fetch(url, {   
         headers: {
@@ -148,9 +142,10 @@ class App  extends React.Component {
     .then(data => {
         this.updateLiveChannelInfos(data.channels)
 		setTimeout(() => {
-
-			this.retrieveLiveStatus( LocalStorageManager.getStoredFollows(this.state.userId))
-			console.log("refresh")
+			if (this.state.userId !== null) {
+				this.retrieveLiveStatus( LocalStorageManager.getStoredFollows(this.state.userId))
+				console.log("refresh")
+			}
 		}, refreshTimer)
     })
     .catch((error) => {
@@ -170,17 +165,21 @@ class App  extends React.Component {
 		this.setState({
 			isSignedIn: value
 		}, () => {
-			console.log("set signed in")
 			this.setState({
 				userId: userId
 			}, () => {
+				if (!value) {
+					this.setState({
+						watchingStreamId : null
+					})
+				} else {
 					var storedFollows =  LocalStorageManager.getStoredFollows(this.state.userId)
-
 					this.retrieveLiveStatus( storedFollows)
-				
 					this.setState({
 						follows:storedFollows
 					})
+				}
+
 				
 			})
 		})
