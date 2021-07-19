@@ -7,6 +7,7 @@ import React from 'react'
 import Header from './components/Header';
 import MaxFollowModal from './components/MaxFollowModal';
 import ReactModal from 'react-modal'
+import LocalStorageManager from './utils/LocalStorageManager';
 
 
 import 'react-pro-sidebar/dist/css/styles.css';
@@ -51,9 +52,7 @@ class App  extends React.Component {
   componentDidMount() {
 	ReactModal.setAppElement('body')
 	
-	if (JSON.parse(localStorage.getItem('follows')) === null) {
-		localStorage.setItem('follows', JSON.stringify({}))
-	}
+	LocalStorageManager.initialize()
 
 
   }
@@ -98,17 +97,13 @@ class App  extends React.Component {
   }
 
   toggleFollow = (info) => {
-	var followsMap = JSON.parse(localStorage.getItem('follows'))
-	var follows = followsMap[this.state.userId]
+
+	var follows = LocalStorageManager.getStoredFollows(this.state.userId)
 
 
 
 	  var channelId = info.resourceId.channelId
-	  
-
-	  if (follows === null || follows == undefined) {
-		  follows = []
-	  }
+	
 
     if (follows.includes(channelId)) {
 		follows = follows.filter(id => channelId !== id)
@@ -124,22 +119,17 @@ class App  extends React.Component {
 	console.log(follows)
 	info.isFollowed = !info.isFollowed
 
+	this.setState ({
+		follows: follows
+	}, () => {
+		LocalStorageManager.saveFollows(this.state.userId, this.state.follows)
 
-	this.saveFollows(followsMap, follows)
+	})
+
 
   }
 
-  saveFollows = (followsMap, follows) => {
-	  
-	  this.setState ({
-		  follows: follows
-	  }, () => {
 
-		followsMap[this.state.userId] = this.state.follows
-		localStorage.setItem('follows', JSON.stringify(followsMap))
-
-	  })
-  }
 
   retrieveLiveStatus(channelIds) {
 	if (channelIds === null || channelIds == undefined) {
@@ -158,9 +148,8 @@ class App  extends React.Component {
     .then(data => {
         this.updateLiveChannelInfos(data.channels)
 		setTimeout(() => {
-			var storedFollows =  JSON.parse(localStorage.getItem('follows'))[this.state.userId]
 
-			this.retrieveLiveStatus( storedFollows)
+			this.retrieveLiveStatus( LocalStorageManager.getStoredFollows(this.state.userId))
 			console.log("refresh")
 		}, refreshTimer)
     })
@@ -185,8 +174,7 @@ class App  extends React.Component {
 			this.setState({
 				userId: userId
 			}, () => {
-				if (this.state.userId != null) {
-					var storedFollows =  JSON.parse(localStorage.getItem('follows'))[this.state.userId]
+					var storedFollows =  LocalStorageManager.getStoredFollows(this.state.userId)
 
 					this.retrieveLiveStatus( storedFollows)
 				
@@ -194,7 +182,6 @@ class App  extends React.Component {
 						follows:storedFollows
 					})
 				
-				}
 			})
 		})
 	}
