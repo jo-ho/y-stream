@@ -9,6 +9,7 @@ export default class Logout extends Component {
 		super(props);
 		this.onLogoutSuccess = this.onLogoutSuccess.bind(this);
 		this.onLogoutFail = this.onLogoutFail.bind(this)
+
 	  }
 
 	  onLogoutSuccess () {
@@ -24,7 +25,7 @@ export default class Logout extends Component {
 	render() {
 		return (
 			<GoogleLogout
-			clientId={process.env.REACT_OAUTH_CLIENT_ID}
+			clientId={process.env.REACT_APP_OAUTH_CLIENT_ID}
 			buttonText="Logout"
 			onLogoutSuccess	={this.onLogoutSuccess}
 			onFailure={ this.onLogoutFail}
