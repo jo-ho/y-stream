@@ -12,7 +12,8 @@ const keepaliveAgent = new HttpsAgent({
 	timeout: 600000, // active socket keepalive for 60 seconds
 	freeSocketTimeout: 600000, // free socket keepalive for 30 seconds
 });
-const threshold = 0.9
+const lowerThreshold = 0.9
+const upperThreshold = 1.05
 const options = {
 	method: 'HEAD',
 	agent: keepaliveAgent,
@@ -22,9 +23,6 @@ app.use(cors())
 
 app.use(bodyParser.json());
 
-
-// var liveContentLength;
-// var channelContentLength;
 
 var ids = []
 var i = 0
@@ -73,7 +71,6 @@ function retrieveChannelStatus(channelId) {
 			} else {
 				console.log("done channels")						
 				return resolve(channelContentLengths)
-				
 			}
 		}).on('error', (err) => {
 			console.error(err);
@@ -83,13 +80,9 @@ function retrieveChannelStatus(channelId) {
 }
 
 function computeLiveStatus(res) {
-
-
 	for (var i = 0; i < ids.length; i++) {
-		console.log(ids[i])
 
-		console.log(liveContentLengths[i] / channelContentLengths[i])
-		if (liveContentLengths[i] / channelContentLengths[i] < threshold || liveContentLengths[i] / channelContentLengths[i] > 1.05) {
+		if (liveContentLengths[i] / channelContentLengths[i] < lowerThreshold || liveContentLengths[i] / channelContentLengths[i] > upperThreshold) {
 			liveChannels.push(ids[i])
 
 			
@@ -102,44 +95,6 @@ function computeLiveStatus(res) {
 	res.json(obj)
 }
 
-function retrieveStatus(channelId, serverResp) {
-	var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
-
-	https.request(liveUrl, options, (res) => {
-		var liveContentLength = res.headers['content-length']
-		// console.log(res.headers)
-		var chUrl = 'https://www.youtube.com/channel/' + channelId
-		https.request(chUrl, options, (res2) => {
-			var channelContentLength = res2.headers['content-length']
-
-			// console.log("liveCL: " + liveContentLength)
-			// console.log("channel: " + channelContentLength)
-			// console.log(channelId)
-			// console.log(liveContentLength / channelContentLength)
-			if (liveContentLength / channelContentLength < threshold) {
-				console.log("live")
-				liveChannels.push(channelId)
-			} else {
-				console.log("not live")
-			}
-			if (i < ids.length - 1) {
-				i += 1
-				retrieveStatus(ids[i], serverResp)
-			} else {
-				console.log("done")
-				var obj = {channels : liveChannels}
-				serverResp.header("Access-Control-Allow-Origin", "*");
-				serverResp.header("Access-Control-Allow-Headers", "X-Requested-With");
-				serverResp.json(obj)
-			}
-		}).on('error', (err) => {
-			console.error(err);
-		}).end();
-	}).on('error', (err) => {
-	console.error(err);
-	}).end();
-}
-
 app.get('/api/:obj', (req, res) => {
 	console.log('/api called!')
 	liveContentLengths = []
@@ -149,16 +104,12 @@ app.get('/api/:obj', (req, res) => {
  	j = 0
  	liveChannels = []
 
-
 	ids = JSON.parse(req.params.obj)["ids"]
 
-	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(values  => {
+	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(()  => {
 		console.log(liveContentLengths)
 		computeLiveStatus(res)
 	});
-
-
-	// retrieveStatus(ids[0], res)
 })
 
 

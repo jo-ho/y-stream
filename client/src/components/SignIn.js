@@ -45,7 +45,6 @@ class SignIn extends React.Component {
 
                 // this.props.onGetLiveStatusesDone(channelIds)
 				
-                console.log(channels)
                 this.props.onGetSubscriptionsDone(channels)
                 // this.retrieveLiveStatus(channelIds.slice(0, 21))
                 // this.retrieveLiveStatus([channelIds[0]])
