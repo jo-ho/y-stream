@@ -20,19 +20,12 @@ import {
   } from "react-router-dom";
 
 
-const refreshTimer = 300000
+const refreshTimer = 60000
 const maxFollows = 10
 
 class App  extends React.Component {
   constructor(props) {
     super(props);
-    this.updateLiveChannelInfos = this.updateLiveChannelInfos.bind(this);
-    this.addSubscriptionsInfos = this.addSubscriptionsInfos.bind(this)
-    this.toggleFollow = this.toggleFollow.bind(this);
-    this.retrieveLiveStatus = this.retrieveLiveStatus.bind(this)
-	this.selectStream = this.selectStream.bind(this)
-	this.setSignedIn = this.setSignedIn.bind(this)
-	this.toggleShowModal = this.toggleShowModal.bind(this)
 
 
     this.state = {
@@ -110,13 +103,11 @@ class App  extends React.Component {
     } else {
 
 		if (follows.length >= maxFollows) {
-			console.log("too many follows")
 			this.toggleShowModal(true)
 			return 
 		}
 		follows.push(channelId)
     }
-	console.log(follows)
 	info.isFollowed = !info.isFollowed
 
 	this.setState ({
@@ -131,7 +122,7 @@ class App  extends React.Component {
 
 
 
-  retrieveLiveStatus(channelIds) {
+  retrieveLiveStatus = (channelIds) => {
     var obj = {ids : channelIds}
     var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
     fetch(url, {   
@@ -144,7 +135,6 @@ class App  extends React.Component {
 		setTimeout(() => {
 			if (this.state.userId !== null) {
 				this.retrieveLiveStatus( LocalStorageManager.getStoredFollows(this.state.userId))
-				console.log("refresh")
 			}
 		}, refreshTimer)
     })
@@ -155,13 +145,13 @@ class App  extends React.Component {
 
 
 
-	selectStream(channelId) {
+	selectStream = (channelId) => {
 		this.setState({
 			watchingStreamId: channelId
 		}, () => {this.props.history.push('/watch')})
 	}
 
-	setSignedIn(value, userId) {
+	setSignedIn = (value, userId) => {
 		this.setState({
 			isSignedIn: value
 		}, () => {
@@ -185,8 +175,8 @@ class App  extends React.Component {
 		})
 	}
 
-	toggleShowModal(value) {
-		this.setState({
+	toggleShowModal = (value) => {
+		this.setState({ 
 			showModal: value
 		})
 	}

@@ -7,18 +7,16 @@ export default class Logout extends Component {
 
 	constructor(props) {
 		super(props);
-		this.onLogoutSuccess = this.onLogoutSuccess.bind(this);
-		this.onLogoutFail = this.onLogoutFail.bind(this)
+
 
 	  }
 
-	  onLogoutSuccess () {
-		  console.log("logout success")
+	  onLogoutSuccess = () => {
 		  this.props.setSignedIn(false, null)
 	  }
 
 
-	  onLogoutFail () {
+	  onLogoutFail = () => {
 		console.log("logout fail")
 	}
 

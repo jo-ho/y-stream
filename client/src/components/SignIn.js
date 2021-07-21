@@ -1,5 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
+import LocalStorageManager from '../utils/LocalStorageManager';
 
 const YOUTUBE_SUBS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
 var channels = []
@@ -9,19 +10,14 @@ class SignIn extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.fetchNextPage = this.fetchNextPage.bind(this);
-		this.onSignInSuccess = this.onSignInSuccess.bind(this)
 	  }
 	
 
-	fetchNextPage(params, userId) {
+	fetchNextPage = (params, userId) => {
 		fetch(`${YOUTUBE_SUBS_API}?` + params)
 		.then(response => response.json())
 		.then(data => {
-            var storedFollows =  JSON.parse(localStorage.getItem('follows'))[userId] 
-			if (storedFollows === null || storedFollows === undefined) {
-				storedFollows = []
-			} 
+            var storedFollows =  LocalStorageManager.getStoredFollows(userId)
             data.items.forEach(element => {
                 var snip = element.snippet
 				var channelId = snip.resourceId.channelId
@@ -41,13 +37,7 @@ class SignIn extends React.Component {
 				this.fetchNextPage(params)
 
 			} else {
-
-
-                // this.props.onGetLiveStatusesDone(channelIds)
-				
                 this.props.onGetSubscriptionsDone(channels)
-                // this.retrieveLiveStatus(channelIds.slice(0, 21))
-                // this.retrieveLiveStatus([channelIds[0]])
 			}
 		})
 		.catch((error) => {
@@ -55,7 +45,7 @@ class SignIn extends React.Component {
 		});
 	}
 
-    onSignInSuccess(googleUser) {
+    onSignInSuccess = (googleUser) => {
         channels = []
         var params =  new URLSearchParams({            
             key : `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
@@ -67,8 +57,6 @@ class SignIn extends React.Component {
         
 		this.fetchNextPage(params, googleUser.getId())
 		this.props.setSignedIn(true, googleUser.getId())
-
-
     }
 
     onSignInFail(googleUser) {

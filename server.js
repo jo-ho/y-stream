@@ -47,7 +47,6 @@ function retrieveLiveStatus(channelId) {
 				i += 1
 				return resolve(retrieveLiveStatus(ids[i]))
 			} else {
-				console.log("done live")			
 				return resolve(liveContentLengths)
 	
 			}
@@ -69,7 +68,6 @@ function retrieveChannelStatus(channelId) {
 				j += 1
 				return resolve(retrieveChannelStatus(ids[j]))
 			} else {
-				console.log("done channels")						
 				return resolve(channelContentLengths)
 			}
 		}).on('error', (err) => {
@@ -96,7 +94,6 @@ function computeLiveStatus(res) {
 }
 
 app.get('/api/:obj', (req, res) => {
-	console.log('/api called!')
 	liveContentLengths = []
 	channelContentLengths = []
  	ids = []
@@ -107,7 +104,6 @@ app.get('/api/:obj', (req, res) => {
 	ids = JSON.parse(req.params.obj)["ids"]
 
 	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(()  => {
-		console.log(liveContentLengths)
 		computeLiveStatus(res)
 	});
 })
