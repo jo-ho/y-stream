@@ -83,6 +83,8 @@ class App  extends React.Component {
 		});
 		this.setState({
 			subscriptionsMap: map
+		}, () => {
+			LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
 		});
 	});
 
