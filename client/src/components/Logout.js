@@ -5,11 +5,6 @@ import { GoogleLogout } from 'react-google-login';
 export default class Logout extends Component {
 
 
-	constructor(props) {
-		super(props);
-
-
-	  }
 
 	  onLogoutSuccess = () => {
 		  this.props.setSignedIn(false, null)

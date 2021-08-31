@@ -6,7 +6,7 @@ class LocalStorageManager {
 	}
 
 	static syncFollowsAndSubscriptions(userId, subscriptionsMap) {
-		var storedFollows =  JSON.parse(localStorage.getItem('follows'))[userId]
+		var storedFollows = LocalStorageManager.getStoredFollows(userId)
 
 
 		for (var i = 0; i < storedFollows.length; i++) {
@@ -23,7 +23,7 @@ class LocalStorageManager {
 	static getStoredFollows(userId) {
 		var storedFollows =  JSON.parse(localStorage.getItem('follows'))[userId]
 
-		if (storedFollows === null || storedFollows == undefined) {
+		if (storedFollows === null || storedFollows === undefined) {
 			storedFollows = []
 		} 
 		return storedFollows

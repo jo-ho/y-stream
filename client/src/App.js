@@ -17,132 +17,125 @@ import {
 	Switch,
 	Route,
 	withRouter
-  } from "react-router-dom";
+} from "react-router-dom";
 
 
 const refreshTimer = 60000
 const maxFollows = 10
 
-class App  extends React.Component {
-  constructor(props) {
-    super(props);
+class App extends React.Component {
+	constructor(props) {
+		super(props);
 
 
-    this.state = {
-      liveChannelIds: [],
-      subscriptionsInfo:[],
-	  subscriptionsMap: {},
-      follows: [],
-	  liveChannelInfos: [],
-	  watchingStreamId: null,
-	  isSignedIn : false,
-	  userId: null,
-	  showModal : false
-    };
+		this.state = {
+			liveChannelIds: [],
+			liveChannelInfos: [],
+			subscriptionsInfo: [],
+			subscriptionsMap: {},
+			followIds: [],
+			watchingStreamId: null,
+			isSignedIn: false,
+			userId: null,
+			showModal: false
+		};
 
-  }
+	}
 
-  componentDidMount() {
-	ReactModal.setAppElement('body')
-	
-	LocalStorageManager.initialize()
-
-
-  }
+	componentDidMount() {
+		ReactModal.setAppElement('body')
+		LocalStorageManager.initialize()
+	}
 
 
-  
-  updateLiveChannelInfos = (channelIds) => {
-    this.setState({
-      liveChannelIds: channelIds
-    }, () => {
-		var infos = []
-		this.state.liveChannelIds.forEach(id => {
-			var info = this.state.subscriptionsMap[id]
-			if (info !== undefined) {
-				infos.push(info)
-	
-			}
-		});
+
+	updateLiveChannelInfos = (channelIds) => {
 		this.setState({
-			liveChannelInfos: infos
-		})
-	});
-
-	
-
-  }
-
-  addSubscriptionsInfos = (infos) => {
-    this.setState({
-      subscriptionsInfo: infos
-    }, () => {
-		var map = {}
-		this.state.subscriptionsInfo.forEach(info => {
-			map[info.resourceId.channelId] = info
-		});
-		this.setState({
-			subscriptionsMap: map
+			liveChannelIds: channelIds
 		}, () => {
-			LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
+			var infos = []
+			this.state.liveChannelIds.forEach(id => {
+				var info = this.state.subscriptionsMap[id]
+				if (info !== undefined) {
+					infos.push(info)
+
+				}
+			});
+			this.setState({
+				liveChannelInfos: infos
+			})
 		});
-	});
-
-	
-  }
-
-  toggleFollow = (info) => {
-
-	var follows = LocalStorageManager.getStoredFollows(this.state.userId)
 
 
 
-	  var channelId = info.resourceId.channelId
-	
+	}
 
-    if (follows.includes(channelId)) {
-		follows = follows.filter(id => channelId !== id)
-    } else {
-
-		if (follows.length >= maxFollows) {
-			this.toggleShowModal(true)
-			return 
-		}
-		follows.push(channelId)
-    }
-	info.isFollowed = !info.isFollowed
-
-	this.setState ({
-		follows: follows
-	}, () => {
-		LocalStorageManager.saveFollows(this.state.userId, this.state.follows)
-
-	})
+	addSubscriptionsInfos = (infos) => {
+		this.setState({
+			subscriptionsInfo: infos
+		}, () => {
+			var map = {}
+			this.state.subscriptionsInfo.forEach(info => {
+				map[info.resourceId.channelId] = info
+			});
+			this.setState({
+				subscriptionsMap: map
+			}, () => {
+				LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
+			});
+		});
 
 
-  }
+	}
+
+	toggleFollow = (info) => {
+
+		var followIds = LocalStorageManager.getStoredFollows(this.state.userId)
 
 
+		var channelId = info.resourceId.channelId
 
-  retrieveLiveStatus = (channelIds) => {
-    var obj = {ids : channelIds}
-    var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
-    fetch(url, {   
-        headers: {
-        'Content-Type': 'application/json',
-     } })
-    .then(response => response.json())
-    .then(data => {
-        this.updateLiveChannelInfos(data.channels)
-		setTimeout(() => {
-			if (this.state.userId !== null) {
-				this.retrieveLiveStatus( LocalStorageManager.getStoredFollows(this.state.userId))
+
+		if (followIds.includes(channelId)) {
+			followIds = followIds.filter(id => channelId !== id)
+		} else {
+			if (followIds.length >= maxFollows) {
+				this.toggleShowModal(true)
+				return
 			}
-		}, refreshTimer)
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+			followIds.push(channelId)
+		}
+		info.isFollowed = !info.isFollowed
+
+		this.setState({
+			followIds: followIds
+		}, () => {
+			LocalStorageManager.saveFollows(this.state.userId, this.state.followIds)
+
+		})
+
+
+	}
+
+
+
+	retrieveLiveStatus = (channelIds) => {
+		var obj = { ids: channelIds }
+		var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
+		fetch(url, {
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				this.updateLiveChannelInfos(data.channels)
+				setTimeout(() => {
+					if (this.state.userId !== null) {
+						this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(this.state.userId))
+					}
+				}, refreshTimer)
+			})
 	}
 
 
@@ -150,96 +143,93 @@ class App  extends React.Component {
 	selectStream = (channelId) => {
 		this.setState({
 			watchingStreamId: channelId
-		}, () => {this.props.history.push('/watch')})
+		}, () => { this.props.history.push('/watch') })
 	}
 
 	setSignedIn = (value, userId) => {
 		this.setState({
-			isSignedIn: value
+			isSignedIn: value,
+			userId: userId
 		}, () => {
-			this.setState({
-				userId: userId
-			}, () => {
-				if (!value) {
-					this.setState({
-						watchingStreamId : null
-					})
-				} else {
-					var storedFollows =  LocalStorageManager.getStoredFollows(this.state.userId)
-					this.retrieveLiveStatus( storedFollows)
-					this.setState({
-						follows:storedFollows
-					})
-				}
+			if (!value) {
+				this.setState({
+					watchingStreamId: null
+				})
+			} else {
+				var storedFollows = LocalStorageManager.getStoredFollows(this.state.userId)
+				this.retrieveLiveStatus(storedFollows)
+				this.setState({
+					followIds: storedFollows
+				})
+			}
 
-				
-			})
+
 		})
 	}
 
 	toggleShowModal = (value) => {
-		this.setState({ 
+		this.setState({
 			showModal: value
 		})
 	}
-	
-  
-  render() {
-    return (
-
-	<div className="App">
-		<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream}/>
-			<main className="main-content">
-				<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos}/>
 
 
-				
-				<Switch>
-					<Route exact path="/">
-						{this.state.isSignedIn ? 
-							<div style={{marginRight:'auto'}}>
-								<h3 > Live And Upcoming </h3>
-								<Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds}/>
-							</div>
-							:
-							<p>Please login</p>
-						}
+	render() {
+		return (
 
-					</Route>
-					<Route path="/subscriptions">
-						{this.state.isSignedIn ? 
-							<div style={{marginRight:'auto'}}>
-							
-								<h3> Subscriptions </h3>
-								<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow}/> 
-								<MaxFollowModal toggleShowModal={this.toggleShowModal} showModal={this.state.showModal} />
+			<div className="App">
+				<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream} />
+				<main className="main-content">
+					<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 
-							</div> 
 
-							:
-							<p>Please login</p>
-						}
-						
 
-					</Route>
-					<Route path="/watch">
+					<Switch>
+						<Route exact path="/">
+							{this.state.isSignedIn ?
+								<div style={{ marginRight: 'auto' }}>
+									<h3 > Live And Upcoming </h3>
+									<Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds} />
+								</div>
+								:
+								<p>Please login</p>
+							}
 
-						{this.state.isSignedIn ? 
-							this.state.watchingStreamId !== null ?
-								<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId}/> :
+						</Route>
+						<Route path="/subscriptions">
+							{this.state.isSignedIn ?
+								<div style={{ marginRight: 'auto' }}>
+
+									<h3> Subscriptions </h3>
+									<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow} />
+									<MaxFollowModal toggleShowModal={this.toggleShowModal} showModal={this.state.showModal} />
+
+								</div>
+
+								:
+								<p>Please login</p>
+							}
+
+
+						</Route>
+						<Route path="/watch">
+
+							{this.state.isSignedIn ?
+								this.state.watchingStreamId !== null ?
+									<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId} /> :
 									<p>Select a stream</p> :
-							<p>Please login</p>
-						}
-							
+								<p>Please login</p>
+							}
 
-					</Route>
-				</Switch>
-			</main>
-		</div>
-    );
-  }
+
+						</Route>
+					</Switch>
+				</main>
+			</div>
+		);
+	}
 }
 
 
 
-export default withRouter(App) ;
+export default withRouter(App);

@@ -8,9 +8,6 @@ var channelIds = []
 
 class SignIn extends React.Component {
 
-	constructor(props) {
-		super(props);
-	  }
 	
 
 	fetchNextPage = (params, userId) => {
