@@ -13,7 +13,9 @@ React/node.js alternative interface to Youtube Live
 ## Screenshots
 
 ![image](https://user-images.githubusercontent.com/27314018/131811207-fd9f3da8-5dc2-458a-b583-121a61ffbae2.png)
+___ 
 ![image](https://user-images.githubusercontent.com/27314018/131811258-d8051e5c-cf56-4b2b-82b4-b47b46eeed91.png)
+___ 
 ![image](https://user-images.githubusercontent.com/27314018/131811324-6eee612d-78d8-4ab6-b5b8-9d9d97380893.png)
 
 
