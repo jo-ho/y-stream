@@ -3,28 +3,24 @@ import { GoogleLogout } from 'react-google-login';
 
 
 export default class Logout extends Component {
+	onLogoutSuccess = () => {
+		this.props.setSignedIn(false, null)
+	}
 
-
-
-	  onLogoutSuccess = () => {
-		  this.props.setSignedIn(false, null)
-	  }
-
-
-	  onLogoutFail = () => {
+	onLogoutFail = () => {
 		console.log("logout fail")
 	}
 
 	render() {
 		return (
 			<GoogleLogout
-			clientId={process.env.REACT_APP_OAUTH_CLIENT_ID}
-			buttonText="Logout"
-			onLogoutSuccess	={this.onLogoutSuccess}
-			onFailure={ this.onLogoutFail}
-		   />
+				clientId={process.env.REACT_APP_OAUTH_CLIENT_ID}
+				buttonText="Logout"
+				onLogoutSuccess={this.onLogoutSuccess}
+				onFailure={this.onLogoutFail}
+			/>
 
-		   
+
 		)
 	}
 }

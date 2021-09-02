@@ -8,8 +8,6 @@ import Header from './components/Header';
 import MaxFollowModal from './components/MaxFollowModal';
 import ReactModal from 'react-modal'
 import LocalStorageManager from './utils/LocalStorageManager';
-
-
 import 'react-pro-sidebar/dist/css/styles.css';
 
 import {
@@ -19,15 +17,12 @@ import {
 	withRouter
 } from "react-router-dom";
 
-
 const refreshTimer = 60000
 const maxFollows = 10
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
-
-
 		this.state = {
 			liveChannelIds: [],
 			liveChannelInfos: [],
@@ -39,15 +34,12 @@ class App extends React.Component {
 			userId: null,
 			showModal: false
 		};
-
 	}
 
 	componentDidMount() {
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
 	}
-
-
 
 	updateLiveChannelInfos = (channelIds) => {
 		this.setState({
@@ -65,12 +57,9 @@ class App extends React.Component {
 				liveChannelInfos: infos
 			})
 		});
-
-
-
 	}
 
-	addSubscriptionsInfos = (infos) => {
+	addSubscriptionsInfos = (infos, userId) => {
 		this.setState({
 			subscriptionsInfo: infos
 		}, () => {
@@ -82,19 +71,14 @@ class App extends React.Component {
 				subscriptionsMap: map
 			}, () => {
 				LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
+				this.setSignedIn(true, userId)
 			});
 		});
-
-
 	}
 
 	toggleFollow = (info) => {
-
 		var followIds = LocalStorageManager.getStoredFollows(this.state.userId)
-
-
 		var channelId = info.resourceId.channelId
-
 
 		if (followIds.includes(channelId)) {
 			followIds = followIds.filter(id => channelId !== id)
@@ -111,10 +95,7 @@ class App extends React.Component {
 			followIds: followIds
 		}, () => {
 			LocalStorageManager.saveFollows(this.state.userId, this.state.followIds)
-
 		})
-
-
 	}
 
 
@@ -137,8 +118,6 @@ class App extends React.Component {
 				}, refreshTimer)
 			})
 	}
-
-
 
 	selectStream = (channelId) => {
 		this.setState({
@@ -176,14 +155,10 @@ class App extends React.Component {
 
 	render() {
 		return (
-
 			<div className="App">
 				<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream} />
 				<main className="main-content">
-					<Header isSignedIn={this.state.isSignedIn} setSignedIn={this.setSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
-
-
-
+					<Header isSignedIn={this.state.isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
 							{this.state.isSignedIn ?
@@ -194,34 +169,25 @@ class App extends React.Component {
 								:
 								<p>Please login</p>
 							}
-
 						</Route>
 						<Route path="/subscriptions">
 							{this.state.isSignedIn ?
 								<div style={{ marginRight: 'auto' }}>
-
 									<h3> Subscriptions </h3>
 									<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow} />
 									<MaxFollowModal toggleShowModal={this.toggleShowModal} showModal={this.state.showModal} />
-
 								</div>
-
 								:
 								<p>Please login</p>
 							}
-
-
 						</Route>
 						<Route path="/watch">
-
 							{this.state.isSignedIn ?
 								this.state.watchingStreamId !== null ?
 									<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId} /> :
 									<p>Select a stream</p> :
 								<p>Please login</p>
 							}
-
-
 						</Route>
 					</Switch>
 				</main>
@@ -229,7 +195,5 @@ class App extends React.Component {
 		);
 	}
 }
-
-
 
 export default withRouter(App);
