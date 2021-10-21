@@ -113,6 +113,6 @@ app.get('/', (req,res) => {
   res.send(`<h1>API Running on the port ${port}</h1>`);
 });
 
-app.listen(port, () => {
+app.listen((process.env.PORT || 5000), () => {
     console.log(`Server listening on the port::${port}`);
 });
