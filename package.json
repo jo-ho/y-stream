@@ -9,7 +9,7 @@
   "scripts": {
     "client": "cd client && npm start",
     "server": "nodemon server.js",
-    "start": " node server.js && (cd client && npm install && npm run build)",
+    "start": "  (cd client && npm install && npm run build) && node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
   "author": "",
