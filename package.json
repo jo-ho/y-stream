@@ -13,6 +13,9 @@
 	"build": "cd client && npm install && npm run build",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
+
+  "homepage": "https://radiant-mesa-24770.herokuapp.com/",
+
   "author": "",
   "license": "ISC",
   "dependencies": {

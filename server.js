@@ -93,6 +93,7 @@ function computeLiveStatus(res) {
 	res.json(obj)
 }
 
+
 app.get('/api/:obj', (req, res) => {
 	liveContentLengths = []
 	channelContentLengths = []
@@ -109,9 +110,11 @@ app.get('/api/:obj', (req, res) => {
 })
 
 
-app.get('*', function(request, response) {
-response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
-});
+const root = require('path').join(__dirname, 'client', 'build')
+app.use(express.static(root));
+app.get("*", (req, res) => {
+    res.sendFile('index.html', { root });
+})
 
 app.listen((process.env.PORT || 5000), () => {
     console.log(`Server listening on the port::${port}`);
