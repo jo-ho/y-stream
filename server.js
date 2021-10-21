@@ -109,8 +109,8 @@ app.get('/api/:obj', (req, res) => {
 })
 
 
-app.get('/', (req,res) => {
-  res.send(`<h1>API Running on the port ${port}</h1>`);
+app.get('*', function(request, response) {
+response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
 
 app.listen((process.env.PORT || 5000), () => {
