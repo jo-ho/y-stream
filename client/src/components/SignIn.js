@@ -31,9 +31,12 @@ class SignIn extends React.Component {
 
 				if (nextToken !== undefined) {
 					params.set('pageToken', nextToken)
-					this.fetchNextPage(params)
+					this.fetchNextPage(params, userId)
 
 				} else {
+					console.log("fetch")
+					console.log(userId)
+
 					this.props.onGetSubscriptionsDone(channels, userId)
 				}
 			})

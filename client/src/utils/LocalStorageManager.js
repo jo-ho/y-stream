@@ -31,6 +31,8 @@ class LocalStorageManager {
 	}
 
 	static saveFollows(userId, follows) {
+		console.log("save")
+		console.log(userId)
 		var followsMap = JSON.parse(localStorage.getItem('follows'))
 		followsMap[userId] = follows
 		localStorage.setItem('follows', JSON.stringify(followsMap))

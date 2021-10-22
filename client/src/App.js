@@ -135,7 +135,7 @@ class App extends React.Component {
 					watchingStreamId: null
 				})
 			} else {
-				var storedFollows = LocalStorageManager.getStoredFollows(this.state.userId)
+				var storedFollows = LocalStorageManager.getStoredFollows(userId)
 				this.retrieveLiveStatus(storedFollows)
 				this.setState({
 					followIds: storedFollows
