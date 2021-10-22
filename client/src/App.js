@@ -102,7 +102,7 @@ class App extends React.Component {
 
 	retrieveLiveStatus = (channelIds) => {
 		var obj = { ids: channelIds }
-		var url = 'https://radiant-mesa-24770.herokuapp.com/api/' + JSON.stringify(obj)
+		var url = `'${process.env.SERVER_URL}api/'` + JSON.stringify(obj)
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',
