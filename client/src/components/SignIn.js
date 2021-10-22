@@ -44,6 +44,7 @@ class SignIn extends React.Component {
 
 	onSignInSuccess = (googleUser) => {
 		channels = []
+		console.log(googleUser)
 		var params = new URLSearchParams({
 			key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
 			part: 'snippet',

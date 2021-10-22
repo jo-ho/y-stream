@@ -5,7 +5,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware( {
-      target: 'http://localhost:4000',
+      target: 'http://localhost:5000',
       changeOrigin: true,
       onProxyRes: function (proxyRes, req, res) {
         proxyRes.headers['Access-Control-Allow-Origin'] = '*';
