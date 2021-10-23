@@ -103,7 +103,6 @@ class App extends React.Component {
 	retrieveLiveStatus = (channelIds) => {
 		var obj = { ids: channelIds }
 		var url = `${process.env.REACT_APP_SERVER_URL}` + 'api/' + JSON.stringify(obj)
-		console.log(url)
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',

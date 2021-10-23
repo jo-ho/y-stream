@@ -34,8 +34,7 @@ class SignIn extends React.Component {
 					this.fetchNextPage(params, userId)
 
 				} else {
-					console.log("fetch")
-					console.log(userId)
+
 
 					this.props.onGetSubscriptionsDone(channels, userId)
 				}
@@ -47,7 +46,6 @@ class SignIn extends React.Component {
 
 	onSignInSuccess = (googleUser) => {
 		channels = []
-		console.log(googleUser)
 		var params = new URLSearchParams({
 			key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
 			part: 'snippet',

@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express(),
       bodyParser = require("body-parser");
-      port = 4000;
+      port = process.env.PORT || 5000;
 const https = require('https');
 const cors = require('cors');
 const HttpsAgent = require('agentkeepalive').HttpsAgent;
@@ -116,6 +116,6 @@ app.get("*", (req, res) => {
     res.sendFile('index.html', { root });
 })
 
-app.listen((process.env.PORT || 5000), () => {
+app.listen(port, () => {
     console.log(`Server listening on the port::${port}`);
 });
