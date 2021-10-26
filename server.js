@@ -12,7 +12,7 @@ const keepaliveAgent = new HttpsAgent({
 	timeout: 600000, // active socket keepalive for 60 seconds
 	freeSocketTimeout: 600000, // free socket keepalive for 30 seconds
 });
-const lowerThreshold = 0.9
+const lowerThreshold = 0.95
 const upperThreshold = 1.05
 const options = {
 	method: 'HEAD',
