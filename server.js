@@ -28,6 +28,8 @@ var ids = []
 var i = 0
 var j = 0
 var liveChannels = []
+var arr = []
+var temp = []
 
 
 var liveContentLengths = []
@@ -41,7 +43,7 @@ function retrieveLiveStatus(channelId) {
 		var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
 		https.request(liveUrl, options, (res) => {
 			liveContentLengths.push(res.headers['content-length'])
-	
+
 	
 			if (i < ids.length - 1) {
 				i += 1
@@ -56,6 +58,46 @@ function retrieveLiveStatus(channelId) {
 		}).end();
 		
 	})  
+
+}
+
+
+function getHTML(channelId) {
+	return new Promise(resolve => {
+		var liveUrl = 'https://www.youtube.com/channel/' + channelId + '/live'
+		var test = []
+	
+		https.request(liveUrl, {"method" : "GET"}, (res) => {
+			liveContentLengths.push(res.headers['content-length'])
+	
+	
+			res.on('data', (d) => {
+				test.push(d)
+			});
+		
+			res.on('end', function () {
+				var str = test.join("");
+				temp.push(channelId)
+	
+				if (str.includes("watching now") || str.includes("Started streaming") ) {
+					arr.push(channelId)
+
+				}
+				return resolve(arr)
+	
+			})
+		
+	
+		}).on('error', (err) => {
+			console.error(err);
+		}).end();
+		
+	})  
+
+
+
+
+
 
 }
 
@@ -76,6 +118,9 @@ function retrieveChannelStatus(channelId) {
 	})
 
 }
+
+
+
 
 function computeLiveStatus(res) {
 	for (var i = 0; i < ids.length; i++) {
@@ -103,10 +148,33 @@ app.get('/api/:obj', (req, res) => {
  	liveChannels = []
 
 	ids = JSON.parse(req.params.obj)["ids"]
+	arr = []
+	funcs = []
+	temp = []
+	console.log("loop")
+	ids.forEach(element => {
 
-	Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(()  => {
-		computeLiveStatus(res)
+		funcs.push( getHTML(element) )
+		console.log(arr)
+
+		console.log(temp)
+
+		
 	});
+
+	Promise.all(funcs).then(() => {
+		console.log("resolved")
+		console.log(arr)
+		console.log(temp)
+		var obj = {channels : arr}
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+		res.json(obj)
+	})
+
+	// Promise.all([retrieveLiveStatus(ids[0]), retrieveChannelStatus(ids[0])]).then(()  => {
+	// 	computeLiveStatus(res)
+	// });
 })
 
 
