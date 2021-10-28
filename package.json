@@ -3,12 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "client": "cd client && npm start",
     "server": "nodemon server.js",
-    "start": " node server.js",
+    "start": "node server.js",
+	"build": "cd client && npm install && npm run build",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
+
+  "homepage": "https://radiant-mesa-24770.herokuapp.com/",
+
   "author": "",
   "license": "ISC",
   "dependencies": {

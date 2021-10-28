@@ -24,7 +24,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			liveChannelIds: [],
+			liveChannelIds: null,
 			liveChannelInfos: [],
 			subscriptionsInfo: [],
 			subscriptionsMap: {},
@@ -70,7 +70,7 @@ class App extends React.Component {
 			this.setState({
 				subscriptionsMap: map
 			}, () => {
-				LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
+				LocalStorageManager.syncFollowsAndSubscriptions(userId, this.state.subscriptionsMap)
 				this.setSignedIn(true, userId)
 			});
 		});
@@ -102,7 +102,7 @@ class App extends React.Component {
 
 	retrieveLiveStatus = (channelIds) => {
 		var obj = { ids: channelIds }
-		var url = 'http://localhost:4000/api/' + JSON.stringify(obj)
+		var url = `${process.env.REACT_APP_SERVER_URL}` + 'api/' + JSON.stringify(obj)
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ class App extends React.Component {
 					watchingStreamId: null
 				})
 			} else {
-				var storedFollows = LocalStorageManager.getStoredFollows(this.state.userId)
+				var storedFollows = LocalStorageManager.getStoredFollows(userId)
 				this.retrieveLiveStatus(storedFollows)
 				this.setState({
 					followIds: storedFollows
@@ -154,6 +154,21 @@ class App extends React.Component {
 
 
 	render() {
+
+		const isSignedIn = this.state.isSignedIn;
+		const liveChannelIds = this.state.liveChannelIds;
+		let element;
+		if (isSignedIn) {
+			if (liveChannelIds == null) {
+				element = <p>Loading ...</p>
+			} else if (liveChannelIds.length == 0 ) {
+				element = <p>No live or upcoming streams</p>
+			} else {
+				element = <Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds} />
+			}
+		} else {
+			element = <p>Please login</p>
+		}
 		return (
 			<div className="App">
 				<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream} />
@@ -161,14 +176,9 @@ class App extends React.Component {
 					<Header setSignedIn={this.setSignedIn} isSignedIn={this.state.isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
-							{this.state.isSignedIn ?
-								<div style={{ marginRight: 'auto' }}>
-									<h3 > Live And Upcoming </h3>
-									<Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds} />
-								</div>
-								:
-								<p>Please login</p>
-							}
+							<h3 > Live And Upcoming </h3>
+							{element}
+
 						</Route>
 						<Route path="/subscriptions">
 							{this.state.isSignedIn ?

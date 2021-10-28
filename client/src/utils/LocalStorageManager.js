@@ -13,11 +13,14 @@ class LocalStorageManager {
 				storedFollows = storedFollows.filter(id => storedFollows[i] !== id)
 			}
 		}
+
 		LocalStorageManager.saveFollows(userId, storedFollows)
 	}
 
 	static getStoredFollows(userId) {
+
 		var storedFollows = JSON.parse(localStorage.getItem('follows'))[userId]
+
 		if (storedFollows === null || storedFollows === undefined) {
 			storedFollows = []
 		}
@@ -25,6 +28,7 @@ class LocalStorageManager {
 	}
 
 	static saveFollows(userId, follows) {
+
 		var followsMap = JSON.parse(localStorage.getItem('follows'))
 		followsMap[userId] = follows
 		localStorage.setItem('follows', JSON.stringify(followsMap))
