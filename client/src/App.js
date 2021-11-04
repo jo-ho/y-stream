@@ -162,7 +162,7 @@ class App extends React.Component {
 			if (liveChannelIds == null) {
 				element = <p>Loading ...</p>
 			} else if (liveChannelIds.length == 0 ) {
-				element = <p>No live or upcoming streams</p>
+				element = <p>No streams are live</p>
 			} else {
 				element = <Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds} />
 			}
@@ -176,7 +176,7 @@ class App extends React.Component {
 					<Header setSignedIn={this.setSignedIn} isSignedIn={this.state.isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
-							<h3 > Live And Upcoming </h3>
+							<h3 > Live </h3>
 							{element}
 
 						</Route>
@@ -195,7 +195,7 @@ class App extends React.Component {
 							{this.state.isSignedIn ?
 								this.state.watchingStreamId !== null ?
 									<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId} /> :
-									<p>Select a stream</p> :
+									<p>Select a stream from the sidebar</p> :
 								<p>Please login</p>
 							}
 						</Route>
