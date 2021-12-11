@@ -24,7 +24,6 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			liveChannelIds: null,
 			liveChannelInfos: [],
 			subscriptionsInfo: [],
 			subscriptionsMap: {},
@@ -42,31 +41,35 @@ class App extends React.Component {
 	}
 
 	updateLiveChannelInfos = (channelIds) => {
-		this.setState({
-			liveChannelIds: channelIds
-		}, () => {
-			var infos = []
-			this.state.liveChannelIds.forEach(id => {
-				var info = this.state.subscriptionsMap[id]
-				if (info !== undefined) {
-					infos.push(info)
 
-				}
-			});
-			this.setState({
-				liveChannelInfos: infos
-			})
+		var infos = []
+		channelIds.forEach(id => {
+			var info = this.state.subscriptionsMap[id]
+			if (info !== undefined) {
+				infos.push(info)
+
+			}
 		});
+		console.log(infos)
+		this.setState({
+			liveChannelInfos: infos
+
+		})
+
 	}
 
 	addSubscriptionsInfos = (infos, userId) => {
 		this.setState({
 			subscriptionsInfo: infos
 		}, () => {
+			console.log("sub infos", infos)
 			var map = {}
 			this.state.subscriptionsInfo.forEach(info => {
 				map[info.resourceId.channelId] = info
 			});
+
+			console.log("sub map", map)
+
 			this.setState({
 				subscriptionsMap: map
 			}, () => {
@@ -156,15 +159,14 @@ class App extends React.Component {
 	render() {
 
 		const isSignedIn = this.state.isSignedIn;
-		const liveChannelIds = this.state.liveChannelIds;
 		let element;
 		if (isSignedIn) {
-			if (liveChannelIds == null) {
+			if (this.state.liveChannelInfos == null) {
 				element = <p>Loading ...</p>
-			} else if (liveChannelIds.length == 0 ) {
+			} else if (this.state.liveChannelInfos.length == 0 ) {
 				element = <p>No streams are live</p>
 			} else {
-				element = <Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelIds} />
+				element = <Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelInfos} />
 			}
 		} else {
 			element = <p>Please login</p>
