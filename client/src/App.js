@@ -18,20 +18,17 @@ import {
 } from "react-router-dom";
 
 const refreshTimer = 60000
-const maxFollows = 10
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			liveChannelInfos: [],
-			subscriptionsInfo: [],
 			subscriptionsMap: {},
 			followIds: [],
 			watchingStreamId: null,
 			isSignedIn: false,
 			userId: null,
-			showModal: false
 		};
 	}
 
@@ -59,47 +56,25 @@ class App extends React.Component {
 	}
 
 	addSubscriptionsInfos = (infos, userId) => {
-		this.setState({
-			subscriptionsInfo: infos
-		}, () => {
-			console.log("sub infos", infos)
-			var map = {}
-			this.state.subscriptionsInfo.forEach(info => {
-				map[info.resourceId.channelId] = info
-			});
 
-			console.log("sub map", map)
-
-			this.setState({
-				subscriptionsMap: map
-			}, () => {
-				LocalStorageManager.syncFollowsAndSubscriptions(userId, this.state.subscriptionsMap)
-				this.setSignedIn(true, userId)
-			});
+		console.log("sub infos", infos)
+		var map = {}
+		infos.forEach(info => {
+			map[info.resourceId.channelId] = info
 		});
-	}
 
-	toggleFollow = (info) => {
-		var followIds = LocalStorageManager.getStoredFollows(this.state.userId)
-		var channelId = info.resourceId.channelId
-
-		if (followIds.includes(channelId)) {
-			followIds = followIds.filter(id => channelId !== id)
-		} else {
-			if (followIds.length >= maxFollows) {
-				this.toggleShowModal(true)
-				return
-			}
-			followIds.push(channelId)
-		}
-		info.isFollowed = !info.isFollowed
+		console.log("sub map", map)
 
 		this.setState({
-			followIds: followIds
+			subscriptionsMap: map
 		}, () => {
-			LocalStorageManager.saveFollows(this.state.userId, this.state.followIds)
-		})
+			LocalStorageManager.syncFollowsAndSubscriptions(userId, this.state.subscriptionsMap)
+			this.setSignedIn(true, userId)
+		});
+
 	}
+
+
 
 
 
@@ -149,13 +124,6 @@ class App extends React.Component {
 		})
 	}
 
-	toggleShowModal = (value) => {
-		this.setState({
-			showModal: value
-		})
-	}
-
-
 	render() {
 
 		const isSignedIn = this.state.isSignedIn;
@@ -186,8 +154,7 @@ class App extends React.Component {
 							{this.state.isSignedIn ?
 								<div style={{ marginRight: 'auto' }}>
 									<h3> Subscriptions </h3>
-									<SubscriptionsContainer subscriptionsInfo={this.state.subscriptionsInfo} toggleFollow={this.toggleFollow} />
-									<MaxFollowModal toggleShowModal={this.toggleShowModal} showModal={this.state.showModal} />
+									<SubscriptionsContainer subscriptionsMap={this.state.subscriptionsMap} userId={this.state.userId} />
 								</div>
 								:
 								<p>Please login</p>

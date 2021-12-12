@@ -19,7 +19,7 @@ export default class MaxFollowModal extends Component {
 	render() {
 		return (
 			<ReactModal
-				isOpen={this.props.showModal}
+				isOpen={this.props.isOpen}
 				contentLabel="Inline Styles Modal Example"
 				style={customStyles}
 			>
