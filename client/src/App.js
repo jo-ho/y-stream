@@ -67,7 +67,6 @@ class App extends React.Component {
 			subscriptionsMap: map
 		}, () => {
 			LocalStorageManager.syncFollowsAndSubscriptions(userId, this.state.subscriptionsMap)
-			this.setSignedIn(true, userId)
 		});
 
 	}
@@ -101,7 +100,7 @@ class App extends React.Component {
 		}, () => { this.props.history.push('/watch') })
 	}
 
-	setSignedIn = (value, userId) => {
+	setSignedIn = (userId) => {
 		this.setState({
 			userId: userId
 		}, () => {

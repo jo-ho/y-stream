@@ -15,7 +15,7 @@ export default class Header extends Component {
 						<li style={{ marginLeft: "auto" }}>
 							{
 								!this.props.isSignedIn ?
-									<SignIn onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} /> :
+									<SignIn onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} /> :
 									<Logout setSignedIn={this.props.setSignedIn} />
 							}
 						</li>

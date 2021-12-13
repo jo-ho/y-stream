@@ -54,7 +54,10 @@ class SignIn extends React.Component {
 			maxResults: 50
 		})
 
+
+		this.props.setSignedIn(googleUser.getId())
 		this.fetchNextPage(params, googleUser.getId())
+
 	}
 
 	onSignInFail(googleUser) {
