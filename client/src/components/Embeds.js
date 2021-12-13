@@ -7,8 +7,8 @@ export default class Embeds extends Component {
     render() {
 		return (
 			<div className="embeds-container">
-			{this.props.chIds.map((info) => (
-				<Embed width={this.props.width} height={this.props.height} key={info.resourceId.channelId} id={info.resourceId.channelId} />
+			{this.props.chIds.map((id) => (
+				<Embed width={this.props.width} height={this.props.height} key={id} id={id} />
 			))}
 			</div>
 		)

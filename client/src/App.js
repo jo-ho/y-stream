@@ -23,11 +23,9 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			liveChannelInfos: [],
+			liveChannelInfos: null,
 			subscriptionsMap: {},
-			followIds: [],
 			watchingStreamId: null,
-			isSignedIn: false,
 			userId: null,
 		};
 	}
@@ -105,19 +103,14 @@ class App extends React.Component {
 
 	setSignedIn = (value, userId) => {
 		this.setState({
-			isSignedIn: value,
 			userId: userId
 		}, () => {
-			if (!value) {
+			if (!userId) {
 				this.setState({
 					watchingStreamId: null
 				})
 			} else {
-				var storedFollows = LocalStorageManager.getStoredFollows(userId)
-				this.retrieveLiveStatus(storedFollows)
-				this.setState({
-					followIds: storedFollows
-				})
+				this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(userId))
 			}
 
 
@@ -126,42 +119,45 @@ class App extends React.Component {
 
 	render() {
 
-		const isSignedIn = this.state.isSignedIn;
-		let element;
-		if (isSignedIn) {
-			if (this.state.liveChannelInfos == null) {
-				element = <p>Loading ...</p>
-			} else if (this.state.liveChannelInfos.length == 0 ) {
-				element = <p>No streams are live</p>
+		const userId = this.state.userId
+		const liveChannelInfos = this.state.liveChannelInfos
+		const isSignedIn = userId != null
+		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.resourceId.channelId) : []
+		let mainContent;
+		if (userId != null) {
+			if (liveChannelInfos == null) {
+				mainContent = <p>Loading ...</p>
+			} else if (liveChannelInfos.length == 0 ) {
+				mainContent = <p>No streams are live</p>
 			} else {
-				element = <Embeds width={"25vw"} height={"30vh"} chIds={this.state.liveChannelInfos} />
+				mainContent = <Embeds width={"25vw"} height={"30vh"} chIds={channelIds} />
 			}
 		} else {
-			element = <p>Please login</p>
+			mainContent = <p>Please login</p>
 		}
 		return (
 			<div className="App">
-				<SideBar infos={this.state.isSignedIn ? this.state.liveChannelInfos : []} selectStream={this.selectStream} />
+				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} selectStream={this.selectStream} />
 				<main className="main-content">
-					<Header setSignedIn={this.setSignedIn} isSignedIn={this.state.isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
+					<Header setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
 							<h3 > Live </h3>
-							{element}
+							{mainContent}
 
 						</Route>
 						<Route path="/subscriptions">
-							{this.state.isSignedIn ?
+							{isSignedIn ?
 								<div style={{ marginRight: 'auto' }}>
 									<h3> Subscriptions </h3>
-									<SubscriptionsContainer subscriptionsMap={this.state.subscriptionsMap} userId={this.state.userId} />
+									<SubscriptionsContainer subscriptionsMap={this.state.subscriptionsMap} userId={userId} />
 								</div>
 								:
 								<p>Please login</p>
 							}
 						</Route>
 						<Route path="/watch">
-							{this.state.isSignedIn ?
+							{isSignedIn ?
 								this.state.watchingStreamId !== null ?
 									<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId} /> :
 									<p>Select a stream from the sidebar</p> :
