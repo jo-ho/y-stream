@@ -5,7 +5,6 @@ import SubscriptionsContainer from './components/SubscriptionsContainer';
 import SideBar from './components/SideBar';
 import React from 'react'
 import Header from './components/Header';
-import MaxFollowModal from './components/MaxFollowModal';
 import ReactModal from 'react-modal'
 import LocalStorageManager from './utils/LocalStorageManager';
 import 'react-pro-sidebar/dist/css/styles.css';
@@ -53,7 +52,7 @@ class App extends React.Component {
 
 	}
 
-	addSubscriptionsInfos = (infos, userId) => {
+	addSubscriptionsInfos = (infos) => {
 
 		console.log("sub infos", infos)
 		var map = {}
@@ -66,7 +65,7 @@ class App extends React.Component {
 		this.setState({
 			subscriptionsMap: map
 		}, () => {
-			LocalStorageManager.syncFollowsAndSubscriptions(userId, this.state.subscriptionsMap)
+			LocalStorageManager.syncFollowsAndSubscriptions(this.state.userId, this.state.subscriptionsMap)
 		});
 
 	}

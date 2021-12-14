@@ -1,62 +1,18 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
-import LocalStorageManager from '../utils/LocalStorageManager';
+import YoutubeService from '../services/YoutubeService';
 
-const YOUTUBE_SUBS_API = "https://www.googleapis.com/youtube/v3/subscriptions"
-var channels = []
-var channelIds = []
 
 class SignIn extends React.Component {
 
-
-
-	fetchNextPage = (params, userId) => {
-		fetch(`${YOUTUBE_SUBS_API}?` + params)
-			.then(response => response.json())
-			.then(data => {
-				var storedFollows = LocalStorageManager.getStoredFollows(userId)
-				data.items.forEach(element => {
-					var snip = element.snippet
-					var channelId = snip.resourceId.channelId
-					if (storedFollows.includes(channelId)) {
-						snip.isFollowed = true
-					} else {
-						snip.isFollowed = false
-
-					}
-					channelIds.push()
-					channels.push(snip)
-				});
-				var nextToken = data.nextPageToken
-
-				if (nextToken !== undefined) {
-					params.set('pageToken', nextToken)
-					this.fetchNextPage(params, userId)
-
-				} else {
-
-
-					this.props.onGetSubscriptionsDone(channels, userId)
-				}
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
+	constructor(props) {
+		super(props)
+		this.youtubeService = new YoutubeService()
 	}
 
 	onSignInSuccess = (googleUser) => {
-		channels = []
-		var params = new URLSearchParams({
-			key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
-			part: 'snippet',
-			mine: true,
-			access_token: `${googleUser.accessToken}`,
-			maxResults: 50
-		})
-
-
 		this.props.setSignedIn(googleUser.getId())
-		this.fetchNextPage(params, googleUser.getId())
+		this.youtubeService.getUserSubscriptions(googleUser, this.props.onGetSubscriptionsDone)
 
 	}
 
