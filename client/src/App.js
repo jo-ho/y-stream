@@ -15,6 +15,7 @@ import {
 	Route,
 	withRouter
 } from "react-router-dom";
+import ProxyService from './services/ProxyService';
 
 const refreshTimer = 60000
 
@@ -27,6 +28,7 @@ class App extends React.Component {
 			watchingStreamId: null,
 			userId: null,
 		};
+		this.proxyService = new ProxyService()
 	}
 
 	componentDidMount() {
@@ -75,22 +77,14 @@ class App extends React.Component {
 
 
 	retrieveLiveStatus = (channelIds) => {
-		var obj = { ids: channelIds }
-		var url = `${process.env.REACT_APP_SERVER_URL}` + 'api/' + JSON.stringify(obj)
-		fetch(url, {
-			headers: {
-				'Content-Type': 'application/json',
+
+		this.proxyService.getLiveChannels(channelIds, this.updateLiveChannelInfos)
+		setTimeout(() => {
+			if (this.state.userId !== null) {
+				this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(this.state.userId))
 			}
-		})
-			.then(response => response.json())
-			.then(data => {
-				this.updateLiveChannelInfos(data.channels)
-				setTimeout(() => {
-					if (this.state.userId !== null) {
-						this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(this.state.userId))
-					}
-				}, refreshTimer)
-			})
+		}, refreshTimer)
+
 	}
 
 	selectStream = (channelId) => {
