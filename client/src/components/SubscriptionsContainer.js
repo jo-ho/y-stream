@@ -29,7 +29,6 @@ export default class SubscriptionsContainer extends Component {
 			followIds.push(channelId)
 		}
 		info.isFollowed = !info.isFollowed
-		console.log(followIds)
 		this.setState({})
 
 		LocalStorageManager.saveFollows(this.props.userId, followIds)

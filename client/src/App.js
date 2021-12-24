@@ -46,7 +46,6 @@ class App extends React.Component {
 
 			}
 		});
-		console.log(infos)
 		this.setState({
 			liveChannelInfos: infos
 
@@ -56,13 +55,11 @@ class App extends React.Component {
 
 	addSubscriptionsInfos = (infos) => {
 
-		console.log("sub infos", infos)
 		var map = {}
 		infos.forEach(info => {
 			map[info.resourceId.channelId] = info
 		});
 
-		console.log("sub map", map)
 
 		this.setState({
 			subscriptionsMap: map

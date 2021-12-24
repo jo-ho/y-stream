@@ -17,7 +17,7 @@ class SignIn extends React.Component {
 	}
 
 	onSignInFail(googleUser) {
-		console.log("Sign in failure")
+		alert("An error occured when signing in")
 	}
 
 	render() {

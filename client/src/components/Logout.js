@@ -8,7 +8,7 @@ export default class Logout extends Component {
 	}
 
 	onLogoutFail = () => {
-		console.log("logout fail")
+		alert("An error occured when logging out")
 	}
 
 	render() {

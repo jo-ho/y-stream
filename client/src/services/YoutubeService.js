@@ -26,7 +26,6 @@ class YoutubeService {
 					this.#fetchNextPage(params, channels, userId, callback)
 
 				} else {
-					console.log(callback)
 					callback(channels)
 				}
 			})
