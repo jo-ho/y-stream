@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from "react-router-dom";
 import SignIn from './SignIn';
 import Logout from './Logout';
+import TwitchSignIn from './TwitchSignIn';
 
 export default class Header extends Component {
 	render() {
@@ -17,7 +18,11 @@ export default class Header extends Component {
 								!this.props.isSignedIn ?
 									<SignIn onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} /> :
 									<Logout setSignedIn={this.props.setSignedIn} />
+								
+
 							}
+							<TwitchSignIn/>
+
 						</li>
 					</ul>
 				</nav>
