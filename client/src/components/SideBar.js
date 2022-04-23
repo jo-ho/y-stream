@@ -9,7 +9,8 @@ export default class SideBar extends Component {
 			<div>
 				<ProSidebar width="87px">
 					<Menu>
-						<Thumbnails infos={this.props.infos} selectStream={this.props.selectStream} />
+						<Thumbnails infos={this.props.infos}  selectStream={this.props.selectStream} />
+						<Thumbnails infos={this.props.twitchInfos} selectStream={() => {}} />
 					</Menu>
 				</ProSidebar>
 			</div>

@@ -19,22 +19,93 @@ import ProxyService from './services/ProxyService';
 
 const refreshTimer = 60000
 
+class LiveChannel {
+	constructor(title, thumbnailUrl, channelId) {
+	  this.title = title;
+	  this.thumbnailUrl = thumbnailUrl;
+	  this.channelId = channelId;
+	}
+  }
+  
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			liveChannelInfos: null,
+			twitchChannelInfos: null,
 			subscriptionsMap: {},
 			watchingStreamId: null,
 			userId: null,
+			accessToken: null
 		};
 		this.proxyService = new ProxyService()
 	}
 
-	componentDidMount() {
+
+	 componentDidMount() {
+		console.log("mount")
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
+
+		console.log(document.location.hash)
+		const query = document.location.hash.split('/')[1]
+		console.log(query)
+		
+
+		if (query.includes("access_token")) {
+			const params = new URLSearchParams(query);
+			const foo = params.get('access_token'); // bar
+			console.log(foo)
+
+			if (!this.props.accessToken) {
+				this.setState({
+					accessToken: foo
+		
+				}, async () => {
+					// Get Users api to get user id
+
+					const users = await fetch("https://api.twitch.tv/helix/users", {    
+						headers: {
+						'Authorization': 'Bearer ' + foo,
+						'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
+					},}).then(response => response.json())
+
+					const activeUser = users.data[0]
+
+					console.log(activeUser)
+
+					const liveChannels = await fetch("https://api.twitch.tv/helix/streams/followed?user_id=" + activeUser.id, {    
+						headers: {
+						'Authorization': 'Bearer ' + foo,
+						'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
+					},})
+					.then(response => response.json())
+
+
+					console.log(liveChannels.data)
+					var arr = []
+					liveChannels.data.forEach(liveChannel => {
+						arr.push(new LiveChannel(liveChannel.user_name, activeUser.profile_image_url, liveChannel.id))
+
+					})
+
+					this.setState({
+						twitchChannelInfos: arr
+			
+					})
+							
+					console.log(arr)
+
+
+				})			
+			}
+
+
+
+		}
 	}
+
 
 	updateLiveChannelInfos = (channelIds) => {
 
@@ -46,10 +117,22 @@ class App extends React.Component {
 
 			}
 		});
-		this.setState({
-			liveChannelInfos: infos
+
+		var arr = []
+		infos.forEach(liveChannel => {
+			arr.push(new LiveChannel(liveChannel.title, liveChannel.thumbnails.default.url, liveChannel.resourceId.channelId))
 
 		})
+
+		console.log(arr)
+
+		this.setState({
+			liveChannelInfos: arr
+
+		})
+			
+
+
 
 	}
 
@@ -85,6 +168,7 @@ class App extends React.Component {
 	}
 
 	selectStream = (channelId) => {
+		console.log("channelId", channelId)
 		this.setState({
 			watchingStreamId: channelId
 		}, () => { this.props.history.push('/watch') })
@@ -106,12 +190,16 @@ class App extends React.Component {
 		})
 	}
 
+
+
+
 	render() {
 
 		const userId = this.state.userId
 		const liveChannelInfos = this.state.liveChannelInfos
+		const twitchInfos = this.state.twitchChannelInfos
 		const isSignedIn = userId != null
-		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.resourceId.channelId) : []
+		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.channelId) : []
 		let mainContent;
 		if (userId != null) {
 			if (liveChannelInfos == null) {
@@ -126,9 +214,9 @@ class App extends React.Component {
 		}
 		return (
 			<div className="App">
-				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} selectStream={this.selectStream} />
+				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
 				<main className="main-content">
-					<Header setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
+					<Header  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
 							<h3 > Live </h3>
