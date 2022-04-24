@@ -16,6 +16,7 @@ import {
 	withRouter
 } from "react-router-dom";
 import ProxyService from './services/ProxyService';
+import TwitchService from './services/TwitchService';
 
 const refreshTimer = 60000
 
@@ -40,71 +41,37 @@ class App extends React.Component {
 			accessToken: null
 		};
 		this.proxyService = new ProxyService()
+		this.twitchService = new TwitchService()
 	}
 
 
-	 componentDidMount() {
+	 async componentDidMount() {
 		console.log("mount")
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
 
-		console.log(document.location.hash)
-		const query = document.location.hash.split('/')[1]
-		console.log(query)
-		
-
-		if (query.includes("access_token")) {
-			const params = new URLSearchParams(query);
-			const foo = params.get('access_token'); // bar
-			console.log(foo)
-
-			if (!this.props.accessToken) {
-				this.setState({
-					accessToken: foo
-		
-				}, async () => {
-					// Get Users api to get user id
-
-					const users = await fetch("https://api.twitch.tv/helix/users", {    
-						headers: {
-						'Authorization': 'Bearer ' + foo,
-						'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
-					},}).then(response => response.json())
-
-					const activeUser = users.data[0]
-
-					console.log(activeUser)
-
-					const liveChannels = await fetch("https://api.twitch.tv/helix/streams/followed?user_id=" + activeUser.id, {    
-						headers: {
-						'Authorization': 'Bearer ' + foo,
-						'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
-					},})
-					.then(response => response.json())
 
 
-					console.log(liveChannels.data)
-					var arr = []
-					liveChannels.data.forEach(liveChannel => {
-						arr.push(new LiveChannel(liveChannel.user_name, activeUser.profile_image_url, liveChannel.id))
+			const liveChannels = await this.twitchService.getLiveChannels()
+			var arr = []
+			liveChannels.forEach(liveChannel => {
+				arr.push(new LiveChannel(liveChannel.user_name, "https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png", liveChannel.id))
 
-					})
+			})
 
-					this.setState({
-						twitchChannelInfos: arr
-			
-					})
-							
-					console.log(arr)
-
-
-				})			
-			}
+			this.setState({
+				twitchChannelInfos: arr
+	
+			})
+					
+			console.log(arr)
 
 
 
-		}
+
+
 	}
+	
 
 
 	updateLiveChannelInfos = (channelIds) => {
