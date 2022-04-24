@@ -37,7 +37,28 @@ class TwitchService {
 			},})
 			.then(response => response.json())
 
-			return liveChannels.data
+			const ids = liveChannels.data.map(liveChannel => liveChannel.user_id)
+
+			console.log(ids)
+
+			const idsQuery = new URLSearchParams()
+			ids.forEach(id => {
+				idsQuery.append('id', id)
+			});
+
+			
+
+			console.log(idsQuery.toString())
+
+			const liveUsers = await fetch("https://api.twitch.tv/helix/users?" + idsQuery.toString(), {    
+				headers: {
+				'Authorization': 'Bearer ' + token,
+				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
+			},}).then(response => response.json())
+
+			console.log("liveUsers",liveUsers)
+
+			return liveUsers.data
 		} return []
 
 	}

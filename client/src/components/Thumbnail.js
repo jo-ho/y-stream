@@ -17,7 +17,7 @@ export default class Thumbnail extends Component {
 				<	
 					img data-tip={this.props.info.title}
 					width="32px" height="32px" src={this.props.info.thumbnailUrl}
-					onClick={() => { this.props.selectStream(this.props.info.channelId) }} 
+					onClick={() => { this.props.selectStream(this.props.info.id) }} 
 				/>
 				<ReactTooltip />
 			</MenuItem>

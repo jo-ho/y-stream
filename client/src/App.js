@@ -21,10 +21,10 @@ import TwitchService from './services/TwitchService';
 const refreshTimer = 60000
 
 class LiveChannel {
-	constructor(title, thumbnailUrl, channelId) {
+	constructor(title, thumbnailUrl, id) {
 	  this.title = title;
 	  this.thumbnailUrl = thumbnailUrl;
-	  this.channelId = channelId;
+	  this.id = id;
 	}
   }
   
@@ -55,7 +55,7 @@ class App extends React.Component {
 			const liveChannels = await this.twitchService.getLiveChannels()
 			var arr = []
 			liveChannels.forEach(liveChannel => {
-				arr.push(new LiveChannel(liveChannel.user_name, "https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png", liveChannel.id))
+				arr.push(new LiveChannel(liveChannel.display_name, liveChannel.profile_image_url, liveChannel.id))
 
 			})
 
@@ -63,7 +63,7 @@ class App extends React.Component {
 				twitchChannelInfos: arr
 	
 			})
-					
+			console.log(liveChannels)			
 			console.log(arr)
 
 
@@ -91,7 +91,6 @@ class App extends React.Component {
 
 		})
 
-		console.log(arr)
 
 		this.setState({
 			liveChannelInfos: arr
@@ -166,7 +165,7 @@ class App extends React.Component {
 		const liveChannelInfos = this.state.liveChannelInfos
 		const twitchInfos = this.state.twitchChannelInfos
 		const isSignedIn = userId != null
-		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.channelId) : []
+		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.id) : []
 		let mainContent;
 		if (userId != null) {
 			if (liveChannelInfos == null) {
