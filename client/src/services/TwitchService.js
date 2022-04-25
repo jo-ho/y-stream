@@ -43,6 +43,8 @@ class TwitchService {
 			},})
 			.then(response => response.json())
 
+			console.log("liveChannels",liveChannels)
+
 			const ids = liveChannels.data.map(liveChannel => liveChannel.user_id)
 
 			console.log(ids)
@@ -63,6 +65,7 @@ class TwitchService {
 			},}).then(response => response.json())
 
 			console.log("liveUsers",liveUsers)
+			
 
 			return liveUsers.data
 		} return []

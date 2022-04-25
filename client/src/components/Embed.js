@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/live_stream?channel="
 
 
 export default class Embed extends Component {
@@ -9,10 +8,7 @@ export default class Embed extends Component {
 			<div className="embed-element">
 				<iframe
 					style={{ width: this.props.width, height: this.props.height }}
-					src={
-						this.props.autoPlay ?
-							YOUTUBE_EMBED_URL + this.props.id + "&autoplay=1" :
-							YOUTUBE_EMBED_URL + this.props.id}
+					src={this.props.src}
 					frameBorder="0"
 					allowFullScreen />
 			</div>

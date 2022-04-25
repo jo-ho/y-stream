@@ -21,10 +21,11 @@ import TwitchService from './services/TwitchService';
 const refreshTimer = 60000
 
 class LiveChannel {
-	constructor(title, thumbnailUrl, id) {
+	constructor(title, thumbnailUrl, id, channelName = "") {
 	  this.title = title;
 	  this.thumbnailUrl = thumbnailUrl;
 	  this.id = id;
+	  this.channelName = channelName
 	}
   }
   
@@ -55,7 +56,7 @@ class App extends React.Component {
 			const liveChannels = await this.twitchService.getLiveChannels()
 			var arr = []
 			liveChannels.forEach(liveChannel => {
-				arr.push(new LiveChannel(liveChannel.display_name, liveChannel.profile_image_url, liveChannel.id))
+				arr.push(new LiveChannel(liveChannel.display_name, liveChannel.profile_image_url, liveChannel.id, liveChannel.login))
 
 			})
 
@@ -166,14 +167,15 @@ class App extends React.Component {
 		const twitchInfos = this.state.twitchChannelInfos
 		const isSignedIn = userId != null
 		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.id) : []
+		const twitchChannelNames = (twitchInfos != null) ? twitchInfos.map(info => info.channelName) : []
 		let mainContent;
 		if (userId != null) {
-			if (liveChannelInfos == null) {
+			if (liveChannelInfos == null || twitchInfos == null) {
 				mainContent = <p>Loading ...</p>
-			} else if (liveChannelInfos.length == 0 ) {
+			} else if (liveChannelInfos.length == 0 && twitchInfos.length == 0 ) {
 				mainContent = <p>No streams are live</p>
 			} else {
-				mainContent = <Embeds width={"25vw"} height={"30vh"} chIds={channelIds} />
+				mainContent = <Embeds width={"25vw"} height={"30vh"} chIds={channelIds} twitchNames={twitchChannelNames} />
 			}
 		} else {
 			mainContent = <p>Please login</p>
