@@ -204,7 +204,7 @@ class App extends React.Component {
 						<Route path="/watch">
 							{isSignedIn ?
 								this.state.watchingStreamId !== null ?
-									<Embed autoPlay={true} width={"90vw"} height={"90vh"} id={this.state.watchingStreamId} /> :
+									<Embed autoPlay={true} width={"90vw"} height={"90vh"} src={ "https://www.youtube.com/embed/live_stream?channel=" + this.state.watchingStreamId} /> :
 									<p>Select a stream from the sidebar</p> :
 								<p>Please login</p>
 							}

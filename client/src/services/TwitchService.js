@@ -43,7 +43,6 @@ class TwitchService {
 			},})
 			.then(response => response.json())
 
-			console.log("liveChannels",liveChannels)
 
 			const ids = liveChannels.data.map(liveChannel => liveChannel.user_id)
 
@@ -63,6 +62,13 @@ class TwitchService {
 				'Authorization': 'Bearer ' + this.accessToken,
 				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
 			},}).then(response => response.json())
+
+
+			liveChannels.data.sort((a,b) => a.user_login - b.user_login)
+			liveUsers.data.sort((a,b) => a.login - b.login)
+
+			
+			console.log("liveChannels",liveChannels)
 
 
 			liveUsers.data.forEach((user, i) => {
