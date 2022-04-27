@@ -64,6 +64,14 @@ class TwitchService {
 				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
 			},}).then(response => response.json())
 
+
+			liveUsers.data.forEach((user, i) => {
+				user.streamInfo = liveChannels.data[i]
+				user.streamInfo.thumbnail_url = user.streamInfo.thumbnail_url.replace('{width}', '640')
+				user.streamInfo.thumbnail_url = user.streamInfo.thumbnail_url.replace('{height}', '360')
+				console.log(user.streamInfo.thumbnail_url)
+			});
+
 			console.log("liveUsers",liveUsers)
 			
 
