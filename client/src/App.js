@@ -38,7 +38,7 @@ class App extends React.Component {
 			liveChannelInfos: null,
 			twitchChannelInfos: null,
 			subscriptionsMap: {},
-			watchingStreamId: null,
+			watchingStreamUrl: null,
 			userId: null,
 			accessToken: null
 		};
@@ -135,11 +135,19 @@ class App extends React.Component {
 
 	}
 
-	selectStream = (channelId) => {
+	selectStream = (channelId, isYoutubeStream) => {
 		console.log("channelId", channelId)
-		this.setState({
-			watchingStreamId: channelId
-		}, () => { this.props.history.push('/watch') })
+		console.log("isYoutubeStream", isYoutubeStream)
+		if (isYoutubeStream) {
+			this.setState({
+				watchingStreamUrl: "https://www.youtube.com/embed/live_stream?channel=" + channelId + "&autoplay=1"
+			}, () => { this.props.history.push('/watch') })
+		} else {
+			this.setState({
+				watchingStreamUrl: "https://player.twitch.tv/?channel=" + channelId +  "&parent=localhost"
+			}, () => { this.props.history.push('/watch') })		
+		}
+
 	}
 
 	setSignedIn = (userId) => {
@@ -148,7 +156,7 @@ class App extends React.Component {
 		}, () => {
 			if (!userId) {
 				this.setState({
-					watchingStreamId: null
+					watchingStreamUrl: null
 				})
 			} else {
 				this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(userId))
@@ -203,8 +211,8 @@ class App extends React.Component {
 						</Route>
 						<Route path="/watch">
 							{isSignedIn ?
-								this.state.watchingStreamId !== null ?
-									<Embed autoPlay={true} width={"90vw"} height={"90vh"} src={ "https://www.youtube.com/embed/live_stream?channel=" + this.state.watchingStreamId} /> :
+								this.state.watchingStreamUrl !== null ?
+									<Embed autoPlay={true} width={"90vw"} height={"90vh"} src={ this.state.watchingStreamUrl} /> :
 									<p>Select a stream from the sidebar</p> :
 								<p>Please login</p>
 							}
