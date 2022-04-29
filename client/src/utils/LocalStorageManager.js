@@ -3,6 +3,10 @@ class LocalStorageManager {
 		if (JSON.parse(localStorage.getItem('follows')) === null) {
 			localStorage.setItem('follows', JSON.stringify({}))
 		}
+
+		if (localStorage.getItem('access_token') === null) {
+			localStorage.setItem('access_token', "")
+		}
 	}
 
 	static syncFollowsAndSubscriptions(userId, subscriptionsMap) {
@@ -25,6 +29,14 @@ class LocalStorageManager {
 			storedFollows = []
 		}
 		return storedFollows
+	}
+
+	static getAccessToken() {
+		return localStorage.getItem('access_token')
+	}
+
+	static setAccessToken(token) {
+		localStorage.setItem('access_token', token)
 	}
 
 	static saveFollows(userId, follows) {

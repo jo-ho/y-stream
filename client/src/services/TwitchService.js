@@ -1,19 +1,19 @@
+import LocalStorageManager from "../utils/LocalStorageManager";
+
 class TwitchService {
 
-	constructor() {
-		this.accessToken = null
-	}
+
 
 	getToken() {
 		console.log(document.location.hash)
 		const query = document.location.hash.split('/')[1]
 		document.location.hash = ''
 		console.log(query)
-		if (!this.accessToken) {
+		if (!LocalStorageManager.getAccessToken()) {
 			if (query.includes("access_token")) {
 				const params = new URLSearchParams(query);
 				const token = params.get('access_token'); 
-				this.accessToken = token
+				LocalStorageManager.setAccessToken(token)
 				return true
 			} else {
 				return false
@@ -26,10 +26,13 @@ class TwitchService {
 
 	async getLiveChannels() {
 
+
 		if (this.getToken()) {
+			var token = LocalStorageManager.getAccessToken()
+
 			const users = await fetch("https://api.twitch.tv/helix/users", {    
 				headers: {
-				'Authorization': 'Bearer ' + this.accessToken,
+				'Authorization': 'Bearer ' + token,
 				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
 			},}).then(response => response.json())
 	
@@ -38,7 +41,7 @@ class TwitchService {
 
 			const liveChannels = await fetch("https://api.twitch.tv/helix/streams/followed?user_id=" + activeUser.id, {    
 				headers: {
-				'Authorization': 'Bearer ' + this.accessToken,
+				'Authorization': 'Bearer ' + token,
 				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
 			},})
 			.then(response => response.json())
@@ -59,13 +62,13 @@ class TwitchService {
 
 			const liveUsers = await fetch("https://api.twitch.tv/helix/users?" + idsQuery.toString(), {    
 				headers: {
-				'Authorization': 'Bearer ' + this.accessToken,
+				'Authorization': 'Bearer ' + token,
 				'Client-Id': `${process.env.REACT_APP_TWITCH_CLIENT_ID}`
 			},}).then(response => response.json())
 
 
-			liveChannels.data.sort((a,b) => a.user_login - b.user_login)
-			liveUsers.data.sort((a,b) => a.login - b.login)
+			liveChannels.data.sort((a,b) => ('' + a.user_login).localeCompare(b.user_login))
+			liveUsers.data.sort((a,b) => ('' + a.login).localeCompare(b.login))
 
 			
 			console.log("liveChannels",liveChannels)

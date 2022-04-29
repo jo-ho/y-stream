@@ -54,6 +54,7 @@ class App extends React.Component {
 
 
 
+
 			const liveChannels = await this.twitchService.getLiveChannels()
 			var arr = []
 			liveChannels.forEach(liveChannel => {
