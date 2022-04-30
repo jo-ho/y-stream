@@ -13,6 +13,7 @@ export default class Header extends Component {
 						<li> <Link to="/">Following</Link></li>
 						<li> <Link to="/subscriptions">Subscriptions</Link></li>
 						<li><Link to="/watch">Watch</Link></li>
+						<ul>
 						<li style={{ marginLeft: "auto" }}>
 							{
 								!this.props.isSignedIn ?
@@ -21,10 +22,16 @@ export default class Header extends Component {
 								
 
 							}
-							<TwitchSignIn/>
 
 						</li>
+						<li>
+						<TwitchSignIn/>
+						</li>
+						</ul>
+
 					</ul>
+
+
 				</nav>
 			</div>
 		)
