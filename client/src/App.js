@@ -17,18 +17,10 @@ import {
 } from "react-router-dom";
 import ProxyService from './services/ProxyService';
 import TwitchService from './services/TwitchService';
+import Livestream from './model/Livestream';
 
 const refreshTimer = 60000
 
-class LiveChannel {
-	constructor(title, thumbnailUrl, id, channelName = "", streamInfo = null) {
-	  this.title = title;
-	  this.thumbnailUrl = thumbnailUrl;
-	  this.id = id;
-	  this.channelName = channelName
-	  this.streamInfo = streamInfo
-	}
-  }
   
 
 class App extends React.Component {
@@ -56,18 +48,12 @@ class App extends React.Component {
 
 
 			const liveChannels = await this.twitchService.getLiveChannels()
-			var arr = []
-			liveChannels.forEach(liveChannel => {
-				arr.push(new LiveChannel(liveChannel.display_name, liveChannel.profile_image_url, liveChannel.id, liveChannel.login, liveChannel.streamInfo))
-
-			})
 
 			this.setState({
-				twitchChannelInfos: arr
+				twitchChannelInfos: liveChannels
 	
 			})
-			console.log(liveChannels)			
-			console.log(arr)
+
 
 
 
@@ -90,8 +76,7 @@ class App extends React.Component {
 
 		var arr = []
 		infos.forEach(liveChannel => {
-			arr.push(new LiveChannel(liveChannel.title, liveChannel.thumbnails.default.url, liveChannel.resourceId.channelId))
-
+			arr.push(new Livestream(liveChannel.title, liveChannel.thumbnails.default.url, liveChannel.resourceId.channelId))
 		})
 
 

@@ -1,7 +1,7 @@
+import Livestream from "../model/Livestream";
 import LocalStorageManager from "../utils/LocalStorageManager";
 
 class TwitchService {
-
 
 
 	getToken() {
@@ -73,18 +73,22 @@ class TwitchService {
 			
 			console.log("liveChannels",liveChannels)
 
+			var arr = []
 
 			liveUsers.data.forEach((user, i) => {
 				user.streamInfo = liveChannels.data[i]
 				user.streamInfo.thumbnail_url = user.streamInfo.thumbnail_url.replace('{width}', '640')
 				user.streamInfo.thumbnail_url = user.streamInfo.thumbnail_url.replace('{height}', '360')
-				console.log(user.streamInfo.thumbnail_url)
+				arr.push(new Livestream(user.display_name, user.profile_image_url, user.id, user.login, user.streamInfo))
+
 			});
+
+
 
 			console.log("liveUsers",liveUsers)
 			
 
-			return liveUsers.data
+			return arr
 		} return []
 
 	}
