@@ -47,12 +47,11 @@ class App extends React.Component {
 
 
 
-			const liveChannels = await this.twitchService.getLiveChannels()
 
-			this.setState({
-				twitchChannelInfos: liveChannels
-	
-			})
+		this.setState({
+			twitchChannelInfos: await this.twitchService.getLiveChannels()
+
+		})
 
 
 
@@ -110,13 +109,20 @@ class App extends React.Component {
 
 
 
-	retrieveLiveStatus = (channelIds) => {
+	retrieveLiveStatus = async (channelIds) => {
 
 		this.proxyService.getLiveChannels(channelIds, this.updateLiveChannelInfos)
+					
+		this.setState({
+			twitchChannelInfos: await this.twitchService.getLiveChannels()
+
+		})
 		setTimeout(() => {
 			if (this.state.userId !== null) {
 				this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(this.state.userId))
 			}
+
+
 		}, refreshTimer)
 
 	}
