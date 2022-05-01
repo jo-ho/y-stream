@@ -20,7 +20,7 @@ class LoginDropdown extends Component {
 		  <a  href='#' onClick={() => this.setState({open: !this.state.open})}>Accounts</a>
 		  {this.state.open ? 
 		  (<ul style={{listStyle: 'none'}} className='dropdown'>
-			  <li ><TwitchSignIn/></li>			  
+			  <TwitchSignIn/>		  
 			  <li >						
 							{
 								!this.props.isSignedIn ?

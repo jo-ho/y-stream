@@ -8,17 +8,17 @@ class TwitchSignIn extends React.Component {
 
     render() {
         return (
-            <div>
+            <li>
                 {!LocalStorageManager.getAccessToken() ? (
-                    <a className='button'
+                    <a
                         href={`https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${process.env.REACT_APP_TWITCH_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_CLIENT_URL}&scope=user%3Aread%3Afollows`}
                     >
-                        Connect with Twitch
+                       <button className="twitch-login">Connect</button> 
                     </a>
                 ) : (
-                    <button disabled >Connected</button>
+                    <button disabled className="twitch-login" >Connected</button>
                 )}
-            </div>
+            </li>
         );
     }
 }

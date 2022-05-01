@@ -99,11 +99,16 @@ a {
   }
 
 
-  a.button {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
+.twitch-login {
+	color: white;
+	text-align: right;
+	padding: 5px;
+	width: 100%;
+	border-radius: 5px;
+	background:url('https://uxwing.com/wp-content/themes/uxwing/download/10-brands-and-social-media/twitch-color.svg') no-repeat left center;
 
-    text-decoration: none;
-    color: initial;
+	background-color: indigo;
+
+
 }
+
