@@ -32,7 +32,6 @@ class App extends React.Component {
 			subscriptionsMap: {},
 			watchingStreamUrl: null,
 			userId: null,
-			accessToken: null
 		};
 		this.proxyService = new ProxyService()
 		this.twitchService = new TwitchService()
@@ -187,7 +186,7 @@ class App extends React.Component {
 					<Header  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
-							<h3 > Live </h3>
+
 							{mainContent}
 
 						</Route>

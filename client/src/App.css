@@ -83,8 +83,8 @@ a {
 
 .dropdown {
 	position: absolute;
-	top: 40px;
-	transform: translateX(-40%);
+	top: 30px;
+	transform: translateX(-33%);
 	background-color: var(--bg);
 	transition: height var(--speed) ease;
   }
@@ -92,7 +92,6 @@ a {
   .menu-item {
 	display: flex;
 	align-items: center;
-	transition: background var(--speed);
 	margin: 0;
 	width: 100%;
 
