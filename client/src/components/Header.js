@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SignIn from './SignIn';
 import Logout from './Logout';
 import TwitchSignIn from './TwitchSignIn';
+import LoginDropdown from './LoginDropdown';
 
 export default class Header extends Component {
 	render() {
@@ -13,21 +14,13 @@ export default class Header extends Component {
 						<li> <Link to="/">Following</Link></li>
 						<li> <Link to="/subscriptions">Subscriptions</Link></li>
 						<li><Link to="/watch">Watch</Link></li>
-						<ul>
-						<li style={{ marginLeft: "auto" }}>
-							{
-								!this.props.isSignedIn ?
-									<SignIn onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} /> :
-									<Logout setSignedIn={this.props.setSignedIn} />
-								
 
-							}
 
-						</li>
-						<li>
-						<TwitchSignIn/>
-						</li>
-						</ul>
+						<LoginDropdown 
+						isSignedIn={this.props.isSignedIn}
+						onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn}>
+
+						</LoginDropdown>
 
 					</ul>
 
