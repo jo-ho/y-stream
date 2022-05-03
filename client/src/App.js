@@ -1,6 +1,4 @@
 import './App.css';
-import Embeds from './components/Embeds';
-import Embed from './components/Embed';
 import SubscriptionsContainer from './components/SubscriptionsContainer';
 import SideBar from './components/SideBar';
 import React from 'react'
@@ -18,6 +16,8 @@ import {
 import ProxyService from './services/ProxyService';
 import TwitchService from './services/TwitchService';
 import Livestream from './model/Livestream';
+import Embeds from './components/Embeds';
+import Embed from './components/Embed';
 
 const refreshTimer = 60000
 
@@ -166,19 +166,7 @@ class App extends React.Component {
 		const liveChannelInfos = this.state.liveChannelInfos
 		const twitchInfos = this.state.twitchChannelInfos
 		const isSignedIn = userId != null
-		const channelIds = (liveChannelInfos != null) ? liveChannelInfos.map(info => info.id) : []
-		let mainContent;
-		if (userId != null) {
-			if (liveChannelInfos == null || twitchInfos == null) {
-				mainContent = <p>Loading ...</p>
-			} else if (liveChannelInfos.length == 0 && twitchInfos.length == 0 ) {
-				mainContent = <p>No streams are live</p>
-			} else {
-				mainContent = <Embeds width={"25vw"} height={"30vh"} chIds={channelIds} twitchInfos={twitchInfos} />
-			}
-		} else {
-			mainContent = <p>Please login</p>
-		}
+
 		return (
 			<div className="App">
 				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
@@ -186,12 +174,23 @@ class App extends React.Component {
 					<Header  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
+						<h3> Twitch </h3>
+						<Embeds
+							infos={twitchInfos}
+							isYoutube={false}
+							userId={LocalStorageManager.getAccessToken()}
 
-							{mainContent}
-
+						/>
+						<h3>Youtube</h3>
+						<Embeds
+							infos={liveChannelInfos}
+							isYoutube={true}
+							userId={userId}
+						/>
+							
 						</Route>
 						<Route path="/subscriptions">
-							{isSignedIn ?
+							{isSignedIn?
 								<div style={{ marginRight: 'auto' }}>
 									<h3> Subscriptions </h3>
 									<SubscriptionsContainer subscriptionsMap={this.state.subscriptionsMap} userId={userId} />
@@ -201,7 +200,7 @@ class App extends React.Component {
 							}
 						</Route>
 						<Route path="/watch">
-							{isSignedIn ?
+							{isSignedIn || LocalStorageManager.getAccessToken() ?
 								this.state.watchingStreamUrl !== null ?
 									<Embed autoPlay={true} width={"90vw"} height={"90vh"} src={ this.state.watchingStreamUrl} /> :
 									<p>Select a stream from the sidebar</p> :
