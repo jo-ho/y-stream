@@ -24,6 +24,25 @@ class TwitchService {
 
 	}
 
+	async revokeToken() {
+
+		var token = LocalStorageManager.getAccessToken()
+		if (token) {
+			const revokeStatus = await fetch("https://id.twitch.tv/oauth2/revoke", {    
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+	
+				},
+				body: 'client_id=' + `${process.env.REACT_APP_TWITCH_CLIENT_ID}`  + '&token=' + token
+			}).then(response => response.status)
+	
+
+			return revokeStatus == 200
+
+		} else return false
+	}
+
 	async getLiveChannels() {
 
 
@@ -92,6 +111,8 @@ class TwitchService {
 		} return []
 
 	}
+
+	
 
 }
 

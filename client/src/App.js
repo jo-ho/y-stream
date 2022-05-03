@@ -126,6 +126,19 @@ class App extends React.Component {
 
 	}
 
+
+	setSignedInTwitch = async (signIn) => {
+		if (!signIn) {
+			if (await this.twitchService.revokeToken()) {
+				LocalStorageManager.setAccessToken("")
+
+				this.setState({
+					twitchInfos: []
+				})
+			}
+		}
+	}
+
 	selectStream = (channelId, isYoutubeStream) => {
 		console.log("channelId", channelId)
 		console.log("isYoutubeStream", isYoutubeStream)
@@ -169,9 +182,9 @@ class App extends React.Component {
 
 		return (
 			<div className="App">
-				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
+				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={LocalStorageManager.getAccessToken() && twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
 				<main className="main-content">
-					<Header  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
+					<Header setSignedInTwitch={this.setSignedInTwitch}  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
 						<h3> Twitch </h3>
