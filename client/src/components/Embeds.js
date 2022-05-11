@@ -12,7 +12,7 @@ export default class Embeds extends Component {
 	  if (this.props.userId) {
 		if (this.props.infos == null) {
 			content = <p>Loading ...</p>
-		} else if (this.props.infos == 0) {
+		} else if (this.props.infos.length == 0) {
 			content = <p>No streams are live</p>
 		} else {
 			if (this.props.isYoutube) {

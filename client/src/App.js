@@ -18,6 +18,7 @@ import TwitchService from './services/TwitchService';
 import Livestream from './model/Livestream';
 import Embeds from './components/Embeds';
 import Embed from './components/Embed';
+import YoutubeService from './services/YoutubeService';
 
 const refreshTimer = 60000
 
@@ -35,6 +36,7 @@ class App extends React.Component {
 		};
 		this.proxyService = new ProxyService()
 		this.twitchService = new TwitchService()
+		this.youtubeService = new YoutubeService()
 	}
 
 
@@ -57,6 +59,7 @@ class App extends React.Component {
 
 
 
+
 	}
 	
 
@@ -71,6 +74,8 @@ class App extends React.Component {
 
 			}
 		});
+
+		console.log("update yt live", infos)
 
 		var arr = []
 		infos.forEach(liveChannel => {
@@ -127,16 +132,16 @@ class App extends React.Component {
 	}
 
 
-	setSignedInTwitch = async (signIn) => {
-		if (!signIn) {
-			if (await this.twitchService.revokeToken()) {
-				LocalStorageManager.setAccessToken("")
+	revokeTwitchToken = async () => {
 
-				this.setState({
-					twitchInfos: []
-				})
-			}
+		if (await this.twitchService.revokeToken()) {
+			LocalStorageManager.setAccessToken("")
+
+			this.setState({
+				twitchInfos: []
+			})
 		}
+		
 	}
 
 	selectStream = (channelId, isYoutubeStream) => {
@@ -154,16 +159,19 @@ class App extends React.Component {
 
 	}
 
-	setSignedIn = (userId) => {
+	setSignedIn = (googleUser) => {
 		this.setState({
-			userId: userId
-		}, () => {
-			if (!userId) {
+			userId: googleUser.getId()
+		}, async () => {
+			if (!googleUser) {
 				this.setState({
 					watchingStreamUrl: null
 				})
 			} else {
-				this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(userId))
+				this.youtubeService.getUserSubscriptions(googleUser, this.addSubscriptionsInfos)
+
+				await this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(googleUser.getId()))
+
 			}
 
 
@@ -184,7 +192,7 @@ class App extends React.Component {
 			<div className="App">
 				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={LocalStorageManager.getAccessToken() && twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
 				<main className="main-content">
-					<Header setSignedInTwitch={this.setSignedInTwitch}  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
+					<Header revokeTwitchToken={this.revokeTwitchToken}  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
 						<Route exact path="/">
 						<h3> Twitch </h3>

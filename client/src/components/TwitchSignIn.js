@@ -16,7 +16,7 @@ class TwitchSignIn extends React.Component {
                        <button className="twitch-login">Connect</button> 
                     </a>
                 ) : (
-                    <button onClick={() => {this.props.setSignedInTwitch(false)}} className="twitch-login" >Connected</button>
+                    <button onClick={this.props.revokeTwitchToken} className="twitch-login" >Connected</button>
                 )}
             </li>
         );

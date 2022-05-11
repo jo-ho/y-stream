@@ -18,7 +18,7 @@ export default class Header extends Component {
 
 						<LoginDropdown 
 						isSignedIn={this.props.isSignedIn}
-						onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} setSignedInTwitch={this.props.setSignedInTwitch}>
+						onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} revokeTwitchToken={this.props.revokeTwitchToken}>
 
 						</LoginDropdown>
 

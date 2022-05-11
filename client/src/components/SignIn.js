@@ -7,13 +7,11 @@ class SignIn extends React.Component {
 
 	constructor(props) {
 		super(props)
-		this.youtubeService = new YoutubeService()
 	}
 
 	onSignInSuccess = (googleUser) => {
-		this.props.setSignedIn(googleUser.getId())
-		this.youtubeService.getUserSubscriptions(googleUser, this.props.onGetSubscriptionsDone)
-
+		this.props.setSignedIn(googleUser)
+		
 	}
 
 	onSignInFail(googleUser) {
