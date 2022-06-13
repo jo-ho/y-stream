@@ -5,10 +5,8 @@ class TwitchService {
 
 
 	getToken() {
-		console.log(document.location.hash)
 		const query = document.location.hash.split('/')[1]
 		document.location.hash = ''
-		console.log(query)
 		if (!LocalStorageManager.getAccessToken()) {
 			if (query.includes("access_token")) {
 				const params = new URLSearchParams(query);
@@ -68,7 +66,6 @@ class TwitchService {
 
 			const ids = liveChannels.data.map(liveChannel => liveChannel.user_id)
 
-			console.log(ids)
 
 			const idsQuery = new URLSearchParams()
 			ids.forEach(id => {
@@ -77,7 +74,6 @@ class TwitchService {
 
 			
 
-			console.log(idsQuery.toString())
 
 			const liveUsers = await fetch("https://api.twitch.tv/helix/users?" + idsQuery.toString(), {    
 				headers: {
@@ -90,7 +86,6 @@ class TwitchService {
 			liveUsers.data.sort((a,b) => ('' + a.login).localeCompare(b.login))
 
 			
-			console.log("liveChannels",liveChannels)
 
 			var arr = []
 
@@ -104,7 +99,6 @@ class TwitchService {
 
 
 
-			console.log("liveUsers",liveUsers)
 			
 
 			return arr

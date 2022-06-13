@@ -41,7 +41,6 @@ class App extends React.Component {
 
 
 	 async componentDidMount() {
-		console.log("mount")
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
 
@@ -75,7 +74,6 @@ class App extends React.Component {
 			}
 		});
 
-		console.log("update yt live", infos)
 
 		var arr = []
 		infos.forEach(liveChannel => {
@@ -145,8 +143,6 @@ class App extends React.Component {
 	}
 
 	selectStream = (channelId, isYoutubeStream) => {
-		console.log("channelId", channelId)
-		console.log("isYoutubeStream", isYoutubeStream)
 		if (isYoutubeStream) {
 			this.setState({
 				watchingStreamUrl: "https://www.youtube.com/embed/live_stream?channel=" + channelId + "&autoplay=1"
