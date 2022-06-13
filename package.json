@@ -14,7 +14,7 @@
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
 
-  "homepage": "https://radiant-mesa-24770.herokuapp.com/",
+  "homepage": "https://ytw-stream.herokuapp.com/",
 
   "author": "",
   "license": "ISC",
