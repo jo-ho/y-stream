@@ -6,8 +6,8 @@ export default class Embeds extends Component {
   render() {
 	  let content;
 
-	  let width = "25vw"
-	  let height = "30vh"
+	  let width = "20vw"
+	  let height = "25vh"
 
 	  if (this.props.userId) {
 		if (this.props.infos == null) {

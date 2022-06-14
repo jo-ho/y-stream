@@ -43,7 +43,8 @@ export default class TwitchEmbed extends Component {
           >
             <a
               target="_blank"
-              href={"https://www.twitch.tv/" + this.props.info.channelName}
+              href={"https://www.twitch.tv/" + this.props.info.channelName}	
+			  className="twitch-stream-title"
             >
               {this.props.info.streamInfo.user_name } | {""}
               {this.props.info.streamInfo.game_name}

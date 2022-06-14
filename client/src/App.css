@@ -25,6 +25,12 @@ a {
 	color: white	;
 }
 
+a.twitch-stream-title {
+	font-size: large;
+
+
+}
+
 .follow-button {
   background-color: #282c34;
   color: white;
@@ -73,7 +79,7 @@ a {
 
 .embeds-container {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 	
 }
 
