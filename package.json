@@ -11,7 +11,7 @@
     "server": "nodemon server.js",
     "start": "node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "build": "cd client && npm install && npm run build && npm run dev"
+    "build": "cd client && npm install && npm run build && cd .. && npm run dev"
 
   },
   "homepage": "https://ytw-stream.herokuapp.com/",
