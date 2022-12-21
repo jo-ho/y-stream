@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express(),
       bodyParser = require("body-parser");
-      port = process.env.PORT || 5000;
+      port = 5000;
 const https = require('https');
 const cors = require('cors');
 const HttpsAgent = require('agentkeepalive').HttpsAgent;
@@ -27,7 +27,7 @@ function determineLiveStatus(channelId) {
 	return new Promise(resolve => {
 		const url = 'https://www.youtube.com/channel/' + channelId + '/live'
 		var temp = []
-	
+
 		https.request(url, options, (res) => {
 			res.on('data', (chunk) => {
 				temp.push(chunk)
@@ -43,8 +43,8 @@ function determineLiveStatus(channelId) {
 		}).on('error', (err) => {
 			console.error(err);
 		}).end();
-		
-	})  
+
+	})
 }
 
 app.get('/api/:obj', (req, res) => {
