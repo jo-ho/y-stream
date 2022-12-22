@@ -11,6 +11,7 @@
     "server": "nodemon server.js",
     "start": "node server.js",
     "build": "npm install && cd client && npm install && npm run build",
+    "reinstall": "npm ci && cd client && npm ci",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
   "homepage": "https://ytw-stream.herokuapp.com/",
@@ -21,10 +22,6 @@
     "concurrently": "^6.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "nodemon": "^2.0.9",
-    "react-modal": "^3.14.3",
-    "react-pro-sidebar": "^0.6.0",
-    "react-router-dom": "^5.3.4",
-    "react-tooltip": "^4.2.21"
+    "nodemon": "^2.0.9"
   }
 }
