@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express(),
-      bodyParser = require("body-parser");
+      bodyParser = require("body-parser"),
       port = 5000;
 const https = require('https');
 const cors = require('cors');
