@@ -22,7 +22,7 @@ import YoutubeService from './services/YoutubeService';
 
 const refreshTimer = 60000
 
-  
+
 
 class App extends React.Component {
 	constructor(props) {
@@ -60,7 +60,7 @@ class App extends React.Component {
 
 
 	}
-	
+
 
 
 	updateLiveChannelInfos = (channelIds) => {
@@ -85,7 +85,7 @@ class App extends React.Component {
 			liveChannelInfos: arr
 
 		})
-			
+
 
 
 
@@ -114,7 +114,7 @@ class App extends React.Component {
 	retrieveLiveStatus = async (channelIds) => {
 
 		this.proxyService.getLiveChannels(channelIds, this.updateLiveChannelInfos)
-					
+
 		this.setState({
 			twitchChannelInfos: await this.twitchService.getLiveChannels()
 
@@ -139,7 +139,7 @@ class App extends React.Component {
 				twitchInfos: []
 			})
 		}
-		
+
 	}
 
 	selectStream = (channelId, isYoutubeStream) => {
@@ -150,28 +150,25 @@ class App extends React.Component {
 		} else {
 			this.setState({
 				watchingStreamUrl: "https://player.twitch.tv/?channel=" + channelId +  "&parent=localhost"
-			}, () => { this.props.history.push('/watch') })		
+			}, () => { this.props.history.push('/watch') })
 		}
 
 	}
 
-	setSignedIn = (googleUser) => {
-		this.setState({
-			userId: googleUser.getId()
-		}, async () => {
+	setSignedIn = async (googleUser) => {
 			if (!googleUser) {
 				this.setState({
-					watchingStreamUrl: null
+					watchingStreamUrl: null,
+          userId : null
 				})
 			} else {
+        this.setState({
+          userId: googleUser.getId()
+        })
 				this.youtubeService.getUserSubscriptions(googleUser, this.addSubscriptionsInfos)
-
 				await this.retrieveLiveStatus(LocalStorageManager.getStoredFollows(googleUser.getId()))
-
 			}
 
-
-		})
 	}
 
 
@@ -204,7 +201,7 @@ class App extends React.Component {
 							isYoutube={true}
 							userId={userId}
 						/>
-							
+
 						</Route>
 						<Route path="/subscriptions">
 							{isSignedIn?
