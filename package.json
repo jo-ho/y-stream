@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "10.x"
+    "node": "18.x"
   },
   "scripts": {
     "client": "cd client && npm start",
