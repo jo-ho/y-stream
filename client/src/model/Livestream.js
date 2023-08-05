@@ -7,5 +7,5 @@ class Livestream {
 	  this.streamInfo = streamInfo
 	}
   }
-  
+
 export default Livestream;

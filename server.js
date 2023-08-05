@@ -19,7 +19,7 @@ const options = {
 app.use(cors())
 app.use(bodyParser.json());
 
-var followChannelIds = []
+
 var liveChannelIds = []
 
 
@@ -50,7 +50,7 @@ function determineLiveStatus(channelId) {
 app.get('/api/:obj', (req, res) => {
 
  	liveChannelIds = []
-	followChannelIds = JSON.parse(req.params.obj)["ids"]
+	var followChannelIds = JSON.parse(req.params.obj)["ids"]
 
 	var functions = []
 	followChannelIds.forEach(channelId => {

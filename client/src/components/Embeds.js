@@ -16,19 +16,18 @@ export default class Embeds extends Component {
 			content = <p>No streams are live</p>
 		} else {
 			if (this.props.isYoutube) {
-				const ids = (this.props.infos != null) ? this.props.infos.map(info => info.id) : []
-				content = <YoutubeEmbeds 
+				content = <YoutubeEmbeds
 				width={width}
 				height={height}
-				ids={ids}/>
+				infos={this.props.infos}/>
 			} else {
 
-				content = <TwitchEmbeds 
+				content = <TwitchEmbeds
 				width={width}
 				height={height}
 				infos={this.props.infos}/>
 			}
-		} 
+		}
 	} else {
 		content = <p>Please login</p>
 	}
