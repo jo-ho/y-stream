@@ -20,10 +20,9 @@ app.use(cors())
 app.use(bodyParser.json());
 
 
-var liveChannelIds = []
 
 
-function determineLiveStatus(channelId) {
+function determineLiveStatus(channelId, liveChannelIds) {
 	return new Promise(resolve => {
 		const url = 'https://www.youtube.com/channel/' + channelId + '/live'
 		var temp = []
@@ -56,18 +55,16 @@ function determineLiveStatus(channelId) {
 
 app.get('/api/:obj', (req, res) => {
 
- 	liveChannelIds = []
+ 	var liveChannelIds = []
 	var followChannelIds = JSON.parse(req.params.obj)["ids"]
 
 	var functions = []
 	followChannelIds.forEach(channelId => {
-		functions.push( determineLiveStatus(channelId) )
+		functions.push( determineLiveStatus(channelId, liveChannelIds) )
 	});
 	Promise.all(functions).then(() => {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    console.log(liveChannelIds)
-
 		res.json({channels : liveChannelIds})
 	})
 
