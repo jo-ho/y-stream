@@ -28,7 +28,6 @@ class App extends React.Component {
 			liveChannelInfos: null,
 			twitchChannelInfos: null,
 			subscriptionsMap: {},
-			watchingStreamUrl: null,
 			userId: null,
 		};
 		this.proxyService = new ProxyService()
@@ -125,19 +124,6 @@ class App extends React.Component {
 
 	}
 
-	selectStream = (channelId, isYoutubeStream) => {
-		if (isYoutubeStream) {
-			this.setState({
-				watchingStreamUrl: "https://www.youtube.com/embed/live_stream?channel=" + channelId + "&autoplay=1"
-			}, () => { this.props.history.push('/watch') })
-		} else {
-			this.setState({
-				watchingStreamUrl: "https://player.twitch.tv/?channel=" + channelId +  "&parent=localhost"
-			}, () => { this.props.history.push('/watch') })
-		}
-
-	}
-
 	setSignedIn = async (googleUser) => {
 			if (!googleUser) {
 				this.setState({
@@ -191,14 +177,6 @@ class App extends React.Component {
 									<SubscriptionsContainer subscriptionsMap={this.state.subscriptionsMap} userId={userId} />
 								</div>
 								:
-								<p>Please login</p>
-							}
-						</Route>
-						<Route path="/watch">
-							{isSignedIn || LocalStorageManager.getAccessToken() ?
-								this.state.watchingStreamUrl !== null ?
-									<Embed autoPlay={true} width={"90vw"} height={"90vh"} src={ this.state.watchingStreamUrl} /> :
-									<p>Select a stream from the sidebar</p> :
 								<p>Please login</p>
 							}
 						</Route>

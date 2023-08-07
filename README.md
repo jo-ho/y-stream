@@ -7,7 +7,7 @@ React/node.js alternative interface to Youtube Live
 - Follow up to 10 subscribed channels
 - Show live and upcoming streams of follows
 - Live updates of stream statuses every 5 minutes
-- Watch streams within the application
+
 
 
 ## Screenshots
