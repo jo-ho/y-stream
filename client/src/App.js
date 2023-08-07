@@ -16,7 +16,6 @@ import ProxyService from './services/ProxyService';
 import TwitchService from './services/TwitchService';
 import Livestream from './model/Livestream';
 import Embeds from './components/Embeds';
-import Embed from './components/Embed';
 import YoutubeService from './services/YoutubeService';
 
 const refreshTimer = 60000
@@ -150,7 +149,7 @@ class App extends React.Component {
 
 		return (
 			<div className="App">
-				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={LocalStorageManager.getAccessToken() && twitchInfos ? twitchInfos : []} selectStream={this.selectStream} />
+				<SideBar infos={isSignedIn && liveChannelInfos ? liveChannelInfos : []} twitchInfos={LocalStorageManager.getAccessToken() && twitchInfos ? twitchInfos : []}/>
 				<main className="main-content">
 					<Header revokeTwitchToken={this.revokeTwitchToken}  setSignedIn={this.setSignedIn} isSignedIn={isSignedIn} onGetSubscriptionsDone={this.addSubscriptionsInfos} />
 					<Switch>
