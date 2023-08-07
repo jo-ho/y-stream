@@ -126,7 +126,6 @@ class App extends React.Component {
 	setSignedIn = async (googleUser) => {
 			if (!googleUser) {
 				this.setState({
-					watchingStreamUrl: null,
           userId : null
 				})
 			} else {

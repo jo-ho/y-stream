@@ -19,7 +19,7 @@ export default class Thumbnail extends Component {
 						if (typeof this.props.info.streamInfo === "string") {
 							window.open("https://www.youtube.com/channel/" + this.props.info.id + "/live", '_blank', 'noopener noreferrer');
 						} else {
-              window.open(this.props.streamInfo, '_blank', 'noopener noreferrer');
+              window.open("https://www.twitch.tv/" + this.props.info.channelName, '_blank', 'noopener noreferrer');
 						}
 						 }}
 				/>
