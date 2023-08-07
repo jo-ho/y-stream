@@ -8,8 +8,8 @@ export default class Embed extends Component {
 			<div className="embed-element">
 				<iframe
 					style={{ width: this.props.width, height: this.props.height }}
-					src={this.props.src}
-					frameBorder="0"
+					src={"https://www.youtube.com/embed/" + this.props.linkId}
+					frameborder="0"
 					allowFullScreen />
 			</div>
 		)

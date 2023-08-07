@@ -8,7 +8,6 @@ import LocalStorageManager from './utils/LocalStorageManager';
 import 'react-pro-sidebar/dist/css/styles.css';
 
 import {
-
 	Switch,
 	Route,
 	withRouter
@@ -21,8 +20,6 @@ import Embed from './components/Embed';
 import YoutubeService from './services/YoutubeService';
 
 const refreshTimer = 60000
-
-
 
 class App extends React.Component {
 	constructor(props) {
@@ -39,56 +36,45 @@ class App extends React.Component {
 		this.youtubeService = new YoutubeService()
 	}
 
-
 	 async componentDidMount() {
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
-
-
-
-
 
 		this.setState({
 			twitchChannelInfos: await this.twitchService.getLiveChannels()
 
 		})
-
-
-
-
-
-
-
 	}
 
 
 
-	updateLiveChannelInfos = (channelIds) => {
+	updateLiveChannelInfos = (streams) => {
 
 		var infos = []
-		channelIds.forEach(id => {
-			var info = this.state.subscriptionsMap[id]
+		streams.forEach(stream => {
+			var info = this.state.subscriptionsMap[stream.id]
 			if (info !== undefined) {
+        info.linkId = stream.linkId
 				infos.push(info)
+
 
 			}
 		});
 
 
 		var arr = []
-		infos.forEach(liveChannel => {
-			arr.push(new Livestream(liveChannel.title, liveChannel.thumbnails.default.url, liveChannel.resourceId.channelId))
+		infos.forEach(info => {
+			arr.push(new Livestream(
+        info.title,
+        info.thumbnails.default.url,
+        info.resourceId.channelId,
+        "",
+        info.linkId))
 		})
-
-
 		this.setState({
 			liveChannelInfos: arr
 
 		})
-
-
-
-
 	}
 
 	addSubscriptionsInfos = (infos) => {
@@ -106,9 +92,6 @@ class App extends React.Component {
 		});
 
 	}
-
-
-
 
 
 	retrieveLiveStatus = async (channelIds) => {
@@ -170,8 +153,6 @@ class App extends React.Component {
 			}
 
 	}
-
-
 
 
 	render() {

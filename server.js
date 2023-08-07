@@ -34,9 +34,16 @@ function determineLiveStatus(channelId) {
 			});
 			res.on('end', function () {
 				var htmlString = temp.join("");
-
 				if (htmlString.includes("watching now") || htmlString.includes("Started streaming") ) {
-					liveChannelIds.push(channelId)
+          const searchPart = '<link rel="canonical" href="https://www.youtube.com/watch?v='
+          var start = htmlString.indexOf(searchPart) + searchPart.length
+          var nextQuoteIdx = htmlString.indexOf('"', start)
+          var linkId = htmlString.substring(start, nextQuoteIdx)
+					liveChannelIds.push({
+            id: channelId,
+            linkId: linkId
+          })
+
 				}
 				return resolve()
 			})
@@ -56,10 +63,11 @@ app.get('/api/:obj', (req, res) => {
 	followChannelIds.forEach(channelId => {
 		functions.push( determineLiveStatus(channelId) )
 	});
-
 	Promise.all(functions).then(() => {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    console.log(liveChannelIds)
+
 		res.json({channels : liveChannelIds})
 	})
 

@@ -9,21 +9,19 @@ export default class Thumbnail extends Component {
 
 
 	render() {
-
-
-
 		return (
 			<MenuItem >
-				<	
-					img data-tip={this.props.info.title}
+				<img
+        alt={this.props.info.title}
+        data-tip={this.props.info.title}
 					width="32px" height="32px" src={this.props.info.thumbnailUrl}
-					onClick={() => { 
-						if (this.props.info.streamInfo == null) {
-							this.props.selectStream(this.props.info.id, true)
+					onClick={() => {
+						if (typeof this.props.info.streamInfo === "string") {
+							window.open("https://www.youtube.com/channel/" + this.props.info.id + "/live", '_blank', 'noopener noreferrer');
 						} else {
-							this.props.selectStream(this.props.info.channelName, false)
+              window.open(this.props.streamInfo, '_blank', 'noopener noreferrer');
 						}
-						 }} 
+						 }}
 				/>
 				<ReactTooltip />
 			</MenuItem>
