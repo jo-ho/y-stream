@@ -8,7 +8,7 @@ class LoginDropdown extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			open: true
+			open: false
 		};
 
 	}
@@ -16,22 +16,21 @@ class LoginDropdown extends Component {
 
   render() {
 	return (
-	  <li style={{ marginLeft: "auto" }}>
+	  <li style={{ marginLeft: "auto" }} >
 		  <a  href='#' onClick={() => this.setState({open: !this.state.open})}>Accounts</a>
-		  {this.state.open ? 
-		  (<ul style={{listStyle: 'none'}} className='dropdown'>
-			  <TwitchSignIn revokeTwitchToken={this.props.revokeTwitchToken}/>		  
-			  <li >						
+
+		  <ul style={{listStyle: 'none'}} className='dropdown' hidden={!this.state.open}>
+			  <TwitchSignIn revokeTwitchToken={this.props.revokeTwitchToken}/>
+			  <li >
 							{
 								!this.props.isSignedIn ?
 									<SignIn onGetLiveStatusesDone={this.props.onGetLiveStatusesDone} onGetSubscriptionsDone={this.props.onGetSubscriptionsDone} setSignedIn={this.props.setSignedIn} /> :
 									<Logout setSignedIn={this.props.setSignedIn} />
-								
+
 
 							}
-</li>			  
-		  </ul>)
-		  : ""}
+</li>
+		  </ul>
 
 		</li>
 	)
