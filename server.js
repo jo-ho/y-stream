@@ -12,8 +12,8 @@ const keepaliveAgent = new HttpsAgent({
 });
 
 const options = {
-	method: 'GET',
-	agent: keepaliveAgent,
+	// method: 'GET',
+	// agent: keepaliveAgent,
 }
 
 app.use(cors())
