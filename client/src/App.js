@@ -37,11 +37,6 @@ class App extends React.Component {
 	 async componentDidMount() {
 		ReactModal.setAppElement('body')
 		LocalStorageManager.initialize()
-
-		this.setState({
-			twitchChannelInfos: await this.twitchService.getLiveChannels()
-
-		})
 	}
 
 
