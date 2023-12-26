@@ -3,7 +3,7 @@ import LocalStorageManager from '../utils/LocalStorageManager';
 import MaxFollowModal from './MaxFollowModal';
 import SubscriptionElement from './SubscriptionElement';
 
-const maxFollows = 10
+const maxFollows = 1000
 
 
 export default class SubscriptionsContainer extends Component {
@@ -32,7 +32,6 @@ export default class SubscriptionsContainer extends Component {
 		this.setState({})
 
 		LocalStorageManager.saveFollows(this.props.userId, followIds)
-			
 
 	}
 
