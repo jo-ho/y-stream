@@ -12,7 +12,7 @@
     "start": "node server.js",
     "build": "npm install && cd client && npm install && npm run build",
     "reinstall": "npm ci && cd client && npm ci",
-    "dev": "\"npm run server\" && \"npm run client\""
+    "dev": "npm run server && npm run client"
   },
   "homepage": "https://ytw-stream.herokuapp.com/",
   "author": "",
