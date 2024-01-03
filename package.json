@@ -8,11 +8,11 @@
   },
   "scripts": {
     "client": "cd client && npm start",
-    "server": "node --max-old-space-size=384 server.js",
+    "server": "node --max-old-space-size=256 server.js",
     "start": "node server.js",
     "build": "npm install && cd client && npm install && npm run build",
     "reinstall": "npm ci && cd client && npm ci",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+    "dev": "\"npm run server\" && \"npm run client\""
   },
   "homepage": "https://ytw-stream.herokuapp.com/",
   "author": "",

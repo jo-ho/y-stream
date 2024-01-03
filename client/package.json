@@ -17,8 +17,8 @@
   },
   "homepage": "https://ytw-stream.herokuapp.com/",
   "scripts": {
-    "start": "react-scripts --max_old_space_size=384 start",
-    "build": "react-scripts --max_old_space_size=384 build",
+    "start": "react-scripts --max_old_space_size=256 start",
+    "build": "react-scripts --max_old_space_size=256 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
