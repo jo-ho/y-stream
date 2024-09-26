@@ -42,6 +42,7 @@ function determineLiveStatus(channelId, liveChannelIds) {
             id: channelId,
             linkId: linkId
           })
+          console.log(liveChannelIds)
 
 				}
 				return resolve()
