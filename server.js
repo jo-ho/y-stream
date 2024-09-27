@@ -58,16 +58,6 @@ function determineLiveStatus(channelId, liveChannelIds) {
                             id: channelId,
                             linkId: linkId,
                         });
-
-                        console.log("Determine live status");
-                        console.log("---------------------");
-                        console.log(htmlString);
-                        console.log("Channel ids");
-                        console.log("-----------");
-                        console.log(linkId);
-                        console.log("Start idx");
-                        console.log("-----------");
-                        console.log(start);
                     }
                     return resolve();
                 });
