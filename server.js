@@ -32,24 +32,42 @@ function determineLiveStatus(channelId, liveChannelIds) {
                 res.on("end", function () {
                     var htmlString = temp.join("");
                     if (htmlString.includes("watching now") || htmlString.includes("Started streaming")) {
-                        const searchPart = '<link rel="canonical" href="https://www.youtube.com/watch?v=';
-                        var start = htmlString.indexOf(searchPart) + searchPart.length;
-                        var nextQuoteIdx = htmlString.indexOf('"', start);
-                        var linkId = htmlString.substring(start, nextQuoteIdx);
+                        var searchStrings = [
+                            '<link rel="canonical" href="https://www.youtube.com/watch?v=',
+                            '{"status":"LIKE","target":{"videoId":"',
+                        ];
+                        var searchIdx = -1;
+                        var i = 0;
+                        for (i = 0; i < searchStrings.length; i++) {
+                            searchIdx = htmlString.indexOf(searchStrings[i]);
+                            if (searchIdx != -1) {
+                                break;
+                            }
+                        }
+
+                        var linkId = ""
+                        if (searchIdx == -1) {
+                            console.error("Stream watch id not found in HTML scraping.");
+                        } else {
+                          var start = searchIdx + searchStrings[i].length;
+                          var nextQuoteIdx = htmlString.indexOf('"', start);
+                          linkId = htmlString.substring(start, nextQuoteIdx);
+                        }
+
                         liveChannelIds.push({
                             id: channelId,
                             linkId: linkId,
                         });
-                        console.log("Determine live status")
-                        console.log("---------------------")
-                        console.log(htmlString);
-                        console.log("Channel ids")
-                        console.log("-----------")
-                        console.log(linkId)
-                        console.log("Start idx")
-                        console.log("-----------")
-                        console.log(start)
 
+                        console.log("Determine live status");
+                        console.log("---------------------");
+                        console.log(htmlString);
+                        console.log("Channel ids");
+                        console.log("-----------");
+                        console.log(linkId);
+                        console.log("Start idx");
+                        console.log("-----------");
+                        console.log(start);
                     }
                     return resolve();
                 });
